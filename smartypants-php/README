@@ -5,10 +5,16 @@ SmartyPants-PHP
 
     by matthew mcglynn
     http://debris.com/
+
+    Additional contributors: 
+    Alexander M. Rosenberg 1.5.1-b1
+    Kevin L. Papendick
     
-    Version 1.4.1php-r2
-    '1.4.1' mirrors the SmartyPants version number; 'r2' indicates 'release 2'
-    Release date: 2 March 2004
+    Version 1.5.1php-11
+    '1.5.1' mirrors the SmartyPants version number; 
+    'r1' indicates 'release 1'
+    Release date: 8 August 2004
+
     
     Much information about punctuation conversion, and the
     complexities and limitations thereof, can be found in the 
@@ -42,11 +48,17 @@ SmartyPants-PHP
     To back-convert "smart" punctuation to ASCII, either
     pass DO_STUPEFY in the 2nd argument to SmartyPants,
     or call the utility function directly:
+    $uneducated = SmartyPants($educated, DO_STUPEFY);
     $uneducated = StupefyEntities($educated);
+    Note that the 'stupefy' process is not completely transparent.
+    For example, a Gutenberg-style ellipses in the input text
+    (" . . . ") will be stupefied to '...'. 
 
     To use SmartyPants-PHP in conjunction with Smarty, 
     you might find this Smarty output filter useful:
     http://professorx.jcssolutions.com/~jstump/src/outputfilter.smartypants.php.asc
+    (As of v. 1.5.1-php-r1, this filter is included with the 
+    distribution.)
 
 SmartyPants
 ===========

@@ -1,6 +1,6 @@
 <?php
 
-/*  SmartyPants-PHPA
+/*  SmartyPants-PHP 1.5.1-r1
  *  <http://monauraljerk.org/smartypants-php/>
  *  A PHP4 port of John Gruber's SmartyPants plug-in for 
  *  Movable Type, BBEdit, Blosxom.
@@ -11,8 +11,10 @@
  *  SmartyPants-PHP ported February 2004 by matthew mcglynn 
  *  <http://debris.com>
  *
+ *  SmartyPants 1.5.1 changes rolled in May 2004 by Alex Rosenberg
+ *
  *  SmartyPants-PHP provides a function-based API to the 
- *  punctuation translation routines of SmartyPants 1.4.1. 
+ *  punctuation translation routines of SmartyPants 1.5.1. 
  *  Code specific to Movable Type, BBEdit, and Blosxom has 
  *  been removed as it is not useful in a PHP context.
  *
@@ -34,10 +36,18 @@
 # See the readme or POD for details, installation instructions, and
 # license information.
 #
-# Copyright (c) 2003 John Gruber
+# Copyright (c) 2003-2004 John Gruber
 #
 
-define('SMARTYPANTS_PHP_VERSION', '1.4.1php-r2');
+define('SMARTYPANTS_PHP_VERSION', '1.5.1php-r1');
+
+// how many times do you want to allow the tokenizer to loop?
+// The higher the value, the longer your system could churn
+// given an infinite-loop bug (or really really really long text string).
+define('MAX_TOKENIZER_LOOPS', 2000);
+
+// print error on tokenizer loop problem? 
+define('ADVISE_TOKENIZER_FAILURE', FALSE);
 
 // Control the operation of the SmartyPants() routine by passing
 // any of the following command modes. To combine modes, 'or' them
@@ -50,7 +60,7 @@ define('DO_OLDSCHOOL_DASHES', 16);
 define('DO_INVERTED_OLDSCHOOL_DASHES', 32);
 define('DO_ELLIPSES', 64);
 define('DO_QUOT_CONV', 128);
-define('DO_STUPEFY', 128);
+define('DO_STUPEFY', 256);
 
 // Set default operational mode
 define('DEFAULT_OPERATION_MODE', DO_QUOTES | DO_BACKTICKS_DOUBLE | DO_DASHES | DO_ELLIPSES);
@@ -60,7 +70,7 @@ define('TOKENS_TYPE_TEXT', 'text');
 define('TOKENS_TYPE_TAG',  'tag');
 
 // punctuation inside these tags will not be modified
-define('TAGS_TO_SKIP', "{<(/?)(?:pre|code|kbd|script)[\s>]}i");
+define('TAGS_TO_SKIP', "{<(/?)(?:pre|code|kbd|script|math)[\s>]}i");
 
 // string SmartyPants ( string input [, int mode] )
 // This function provides the main API to the library. In most cases, you'll
@@ -88,6 +98,7 @@ function SmartyPants($text = '', $mode = DEFAULT_OPERATION_MODE) {
     if ($mode & DO_INVERTED_OLDSCHOOL_DASHES)   { $do_inverted_oldschool_dashes = TRUE; }
     if ($mode & DO_ELLIPSES)                    { $do_ellipses  = TRUE;           }
     if ($mode & DO_QUOT_CONV)                   { $convert_quot = TRUE;           }
+    if ($mode & DO_STUPEFY)                     { $do_stupefy   = TRUE;           }
     
     // tokenize input string -- break it into HTML tags and the text between them.
     $tokens = array();
@@ -215,7 +226,6 @@ REGEX;
     $s = preg_replace("/^'(?=[$punct_class]\B)/", '&#8217;', $s);
     $s = preg_replace("/^\"(?=[${punct_class}]\B)/", '&#8221;', $s);
 
-
     # Special case for double sets of quotes, e.g.:
     #   <p>He said, "'Quoted' words in a larger quote."</p>
     $s = preg_replace("/\"'(?=\w)/", '&#8220;&#8216;', $s);
@@ -225,6 +235,7 @@ REGEX;
     $s = preg_replace("/'(?=\d{2}s)/", '&#8217;', $s);
 
     $close_class = "[^ \t\r\n\[\{\(\-]";
+    $dec_dashes = "&\#8211;|&\#8212;";
 
     # Get most opening single quotes:
     $pattern = <<<REGEX
@@ -234,7 +245,7 @@ REGEX;
         &nbsp;      |   # a non-breaking space entity, or
         --          |   # dashes, or
         &[mn]dash;  |   # named dash entities, or
-        &\#821[12]; |   # decimal dash entities
+        $dec_dashes |   # or decimal entities
         &\#x201[34];    # or hex
     )
    '                   # the quote
@@ -268,7 +279,7 @@ REGEX;
         &nbsp;      |   # a non-breaking space entity, or
         --          |   # dashes, or
         &[mn]dash;  |   # named dash entities, or
-        &\#821[12]; |   # decimal dash entities
+        $dec_dashes |   # or decimal entities
         &\#x201[34];    # or hex
     )
     "                   # the quote
@@ -376,12 +387,14 @@ function EducateEllipses($s = '') {
 #
 #   Parameter:  String.
 #   Returns:    The string, with each instance of "..." translated to
-#               an ellipsis HTML entity.
+#               an ellipsis HTML entity. Also converts the case where
+#               there are spaces between the dots.
 #
 #   Example input:  Huh...?
 #   Example output: Huh&#8230;?
 
     $s = str_replace('...', '&#8230;', $s);
+    $s = str_replace('. . .', '&#8230;', $s);
     return $s;
 }
 
@@ -494,13 +507,16 @@ function _tokenize(&$str, &$tokens) {
                (?s: <\? .*? \?> ) |
                $nested_tags/x";
 
-
     $last_tag_end = -1;
     $loops = $offset = 0;
-    while (preg_match($match, $str, $hits, PREG_OFFSET_CAPTURE, $offset)) {
+
+//433 PHP 4.3.3 is required for this
+//433    while (preg_match($match, $str, $hits, PREG_OFFSET_CAPTURE, $offset)) {
+    while (preg_match($match, substr($str, $offset), $hits, PREG_OFFSET_CAPTURE)) {
 
         $extracted_tag = $hits[0][0];   // contains the full HTML tag
-        $tag_start = (int)$hits[0][1];  // position of captured in string
+//433   $tag_start = (int)$hits[0][1];  // position of captured in string
+        $tag_start = $offset + (int)$hits[0][1];  // position of captured in string
         $offset = $tag_start + 1;       // tells preg_match where to start on next iteration
 
         // if this tag isn't next to the previous one, store the interstitial text
@@ -513,8 +529,16 @@ function _tokenize(&$str, &$tokens) {
                           'body' => $extracted_tag);
 
         $last_tag_end = $tag_start + strlen($extracted_tag) - 1;
-
+        
+        if ($loops++ > MAX_TOKENIZER_LOOPS) { 
+        
+            if (ADVISE_TOKENIZER_FAILURE) {
+                print "SmartyPants _tokenize failure."; 
+            }
+            return; 
+        }
     }
+
 
     // if text remains after the close of the last tag, grab it
     if ($offset < $len) {

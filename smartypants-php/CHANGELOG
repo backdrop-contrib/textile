@@ -1,10 +1,44 @@
-CHANGELOG, last updated 2004-03-02
+CHANGELOG, last updated 2004-08-08
 
 This document contains the changelog for
 SmartyPants-PHP, a "quote educator" library
 based on John Gruber's SmartyPants plug-in.
 
 -------------------------------------------------------------------------------
+
+1.5.1-php-r1    2004-08-08    passes regression testing
+
+                              bugfix: missing escapes in regex definition 
+                              within EducateQuotes() caused some opening
+                              straight quotes to be missed (introduced in 1.5.1-b1)
+
+                              bugfix: DO_STUPEFY token value was the same
+                              as DO_QUOT_CONV ?! (Doh!) (introduced in 1.4.1)
+
+                              bugfix: SmartyPants function did not set $do_stupefy.
+                              (introduced in 1.4.1) Thanks to Kevin Papendick for 
+                              pointing this out.
+
+                              feature: max loop count in _tokenize() function now
+                              set via define(). Suggested by Kevin Papendick.
+
+                              feature: error message upon exceeding loop-max 
+                              can now be ignored silently; behavior can be set
+                              via define(). Suggested by Kevin Papendick.
+
+                              change: max loop count in _tokenize() raised
+                              from 100 to 2000, to reduce the likelihood of
+                              anyone ever encountering a _tokenize() failure.
+
+                              Note: thanks to Alexander Rosenberg, 1.5.1-php-r1 retains
+                              compatibility with PHP 4.3.2. Previous versions required
+                              PHP 4.3.3. This is good news for MacOS X 10.3.4 users, 
+                              because 4.3.2 is the version of PHP that ships with the OS.
+
+1.5.1-php-b1    2004-07-03    upgrades from SmartyPants 1.5.1
+                              Now compatible with PHP 4.3.2
+
+                              This release was submitted by Alexander M. Rosenberg.
 
 1.4.1-php-r2    2004-03-02    changed $tags_to_skip to define()d value
                               to avoid scope problems (in calling SmartyPants()
