@@ -409,7 +409,7 @@ function _textile_version() {
    * to determine newer/older versions for upgrade and installation
    * purposes.
    */
-  return array('text' => '2.0.3', 'build' => 2004052900);
+  return array('text' => '2.0.4', 'build' => 2004072800);
 } // function _textile_version
 
 /**
