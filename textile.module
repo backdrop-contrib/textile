@@ -47,8 +47,7 @@
 // update automatically
 _textile_install();
 
-require_once(module_get_path('textile') . '/textilephp/Textile.php');
-require_once(module_get_path('textile') . '/smartypants-php/SmartyPants-PHP.inc');
+require_once(dirname(__FILE__) . '/textilephp/Textile.php');
 
 /********************************************************************
  * Drupal Hooks
@@ -66,7 +65,7 @@ function textile_filter($in_op, $in_delta = 0, $in_format = -1, $in_text = '') {
       return t('Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.');
 
     case 'process':
-      if (variable_get("textile_tags_$in_format", 1)) {
+      if (variable_get("textile_tags_$in_format", 0)) {
         return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process', $in_text);
       }
       else {
@@ -74,7 +73,7 @@ function textile_filter($in_op, $in_delta = 0, $in_format = -1, $in_text = '') {
       }
 
     case 'settings':
-      return form_group(t('Textile filter'), form_checkbox(t('Use tags'), "textile_tags_$in_format", 1, variable_get("textile_tags_$in_format", 1), t('If enabled, only text between [textile] and optional [/textile] tags will be processed.  Otherwise, all text will be processed as Textile markup.')));
+      return form_group(t('Textile filter'), form_checkbox(t('Use tags'), "textile_tags_$in_format", 1, variable_get("textile_tags_$in_format", 0), t('If enabled, only text between [textile] and optional [/textile] tags will be processed.  Otherwise, all text will be processed as Textile markup.')));
 
     default:
       return $in_text;
@@ -354,7 +353,7 @@ function textile_filter_tips($in_delta, $in_format, $in_is_long = FALSE) {
 </table>
 ');
   }
-  elseif (variable_get("textile_tags_$in_format", 1)) {
+  elseif (variable_get("textile_tags_$in_format", 0)) {
     return t('You can use Textile markup to format text between the [textile] and (optional) [/textile] tags.');
   }
   else {
@@ -404,7 +403,7 @@ function _textile_version() {
    * to determine newer/older versions for upgrade and installation
    * purposes.
    */
-  return array('text' => '2.1.1', 'build' => 2004092301);
+  return array('text' => '4.6r1', 'build' => 2005032101);
 } // function _textile_version
 
 /**
@@ -481,7 +480,7 @@ function _textile_process($in_matches) {
   static $s_textile = NULL;
 
   if ($s_textile === NULL) {
-    $s_textile = new DrupalTextile(array('smarty_mode' => DEFAULT_OPERATION_MODE));
+    $s_textile = new DrupalTextile(array('charset' => 'UTF-8', 'char_encoding' => 0, 'smarty_mode' => DEFAULT_OPERATION_MODE));
   }
 
   return $s_textile->process($in_matches[1]);
