@@ -2,6 +2,12 @@ textile.module
 CHANGELOG
 $Id$
 
+2004-05-25
+  - release 2.0.1/2004052500
+  - INSTALL, README: added note about title.module
+  - Textile.php: updated to version 2.0.1 which fixes a bug with link
+    lookup lists
+
 2004-05-24
   - release 2.0/2004052400
   - textile.module
