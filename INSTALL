@@ -5,7 +5,9 @@ $Id$
 Installation of textile.module could not be simpler. Simply copy the
 textile directory, containing the textile.module and Textile.php files
 to your Drupal modules directory. Then log into your site and go to
-the module configuration page and enable the Textile module.
+the module configuration page and enable the Textile module. If you
+are using the title module, you will need to ensure that Textile comes
+before the title module on the filter ordering page.
 
 NOTE: Drupal's current filter implementation is not the most efficient
 and will be reworked in upcoming releases. This module should perform
