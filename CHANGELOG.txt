@@ -2,6 +2,22 @@ textile.module
 CHANGELOG.txt
 $Id$
 
+2004-03-21
+  - release 4.5r3/2005032100 (versioning changed to better coincide
+    with Drupal versions)
+  - textile.module
+    - import Textile.php based on __FILE__ rather than
+      module_get_path() (addresses task 14544 reported by mousse-man)
+    - default [textile] and [/textile] tags to false (NOTE: You may
+      need to verify your input format settings!)
+    - set charset to UTF-8 and disable char_encoding in the
+      DrupalTextile constructor (fixes bug 11357 reported by Tommy
+      Sundstrom)
+  - textilephp: import of TextilePHP 2.0.8
+  - smartypants-php: removed; smartypants functionality is now
+    available in the separate smartypants filter module (NOTE: You may
+    want to install and enable the smartypants module.)
+
 2004-09-23
   - release 2.1.1/2004092301
   - textilephp: import of TextilePHP 2.0.7
