@@ -4,10 +4,11 @@ $Id$
 
 The Textile module allows you to enter content using Textile, a
 simple, plain text syntax that is filtered into valid XHTML. The
-filter tips found at <http://your_drupal_site/filter/tips> provides
-syntax descriptions and examples. If you are using the title module,
-you will need to ensure that Textile comes before the title module on
-the filter ordering page.
+filter tips found at
+<http://your_drupal_site/filter/tips#filter-textile> provides syntax
+descriptions and examples. If you are using the title module, you will
+need to ensure that Textile comes before the title module on the
+filter ordering page.
 
 More information about Textile can be found at the Textile home page
 <http://textism.com/tools/textile/>.
@@ -22,14 +23,14 @@ Files
   - textile.module
       the actual module (PHP source code)
 
-  - Textile.php
+  - textilephp (directory)
       a PHP port of Brad Choate's (<brad at bradchoate dot com>)
       Textile.pm (<http://bradchoate.com/mt-plugins/textile>) Perl
       module ported by Jim Riggs (PHP source code); this file is
       available separately under the GNU GPL from
       <http://jimandlissa.com/project/textilephp>
 
-  - SmartyPants-PHP.inc
+  - smartypants-php (directory)
       a PHP port of John Gruber's (<http://daringfireball.net/>) Perl
       SmartyPants.pl Movable Type plugin ported by Matthew McGlynn
       (PHP source code); this file is available separately under a
