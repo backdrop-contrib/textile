@@ -301,7 +301,7 @@ class Textile2 {
     }
 
 // -------------------------------------------------------------
-    function table($text) 
+    function theme("table", $text) 
     {
         $text = $text."\n\n";
         return preg_replace_callback("/^(?:table(_?$this->s$this->a$this->c)\. ?\n)?^($this->a$this->c\.? ?\|.*\|)\n\n/smU",
