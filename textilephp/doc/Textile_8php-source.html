@@ -392,19 +392,19 @@
 00772 
 00773     <span class="comment">// preserve contents of the '==', 'pre', 'blockcode' sections</span>
 00774     $str = preg_replace_callback('{(^|\n\n)==(.+?)==($|\n\n)}s',
-00775                                  $this-&gt;_cb('<span class="stringliteral">"$m[1]\n\n"</span> . $this-&gt;_repl($this-&gt;repl[0], $this-&gt;format_block(array(<span class="stringliteral">"text"</span> =&gt; $m[2]))) . <span class="stringliteral">"\n\n$m[3]"</span>'), $str);
+00775                                  $this-&gt;_cb('<span class="stringliteral">"$m[1]\n\n"</span> . $me-&gt;_repl($me-&gt;repl[0], $me-&gt;format_block(array(<span class="stringliteral">"text"</span> =&gt; $m[2]))) . <span class="stringliteral">"\n\n$m[3]"</span>'), $str);
 00776 
 00777     <span class="keywordflow">if</span> (!$this-&gt;disable_html()) {
 00778       <span class="comment">// preserve style, script tag contents</span>
-00779       $str = preg_replace_callback('!(&lt;(style|script)(?:&gt;| .+?&gt;).*?&lt;/\2&gt;)!s', $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $m[1])'), $str);
+00779       $str = preg_replace_callback('!(&lt;(style|script)(?:&gt;| .+?&gt;).*?&lt;/\2&gt;)!s', $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $m[1])'), $str);
 00780 
 00781       <span class="comment">// preserve HTML comments</span>
-00782       $str = preg_replace_callback('|(&lt;!--.+?--&gt;)|s', $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $m[1])'), $str);
+00782       $str = preg_replace_callback('|(&lt;!--.+?--&gt;)|s', $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $m[1])'), $str);
 00783 
 00784       <span class="comment">// preserve pre block contents, encode contents by default</span>
 00785       $pre_start = count($this-&gt;repl[0]);
 00786       $str = preg_replace_callback('{(&lt;pre(?: [^&gt;]*)?&gt;)(.+?)(&lt;/pre&gt;)}s',
-00787                                    $this-&gt;_cb('<span class="stringliteral">"\n\n"</span> . $this-&gt;_repl($this-&gt;repl[0], $m[1] . $this-&gt;encode_html($m[2], 1) . $m[3]) . <span class="stringliteral">"\n\n"</span>'), $str);
+00787                                    $this-&gt;_cb('<span class="stringliteral">"\n\n"</span> . $me-&gt;_repl($me-&gt;repl[0], $m[1] . $me-&gt;encode_html($m[2], 1) . $m[3]) . <span class="stringliteral">"\n\n"</span>'), $str);
 00788       <span class="comment">// fix code tags within pre blocks we just saved.</span>
 00789       <span class="keywordflow">for</span> ($i = $pre_start; $i &lt; count($this-&gt;repl[0]); $i++) {
 00790         $this-&gt;repl[0][$i] = preg_replace('|&amp;lt;(/?)code(.*?)&amp;gt;|s', '&lt;$1code$2&gt;', $this-&gt;repl[0][$i]);
@@ -412,15 +412,15 @@
 00792 
 00793       <span class="comment">// preserve code blocks by default, encode contents</span>
 00794       $str = preg_replace_callback('{(&lt;code(?: [^&gt;]+)?&gt;)(.+?)(&lt;/code&gt;)}s',
-00795                                    $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $m[1] . $this-&gt;encode_html($m[2], 1) . $m[3])'), $str);
+00795                                    $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $m[1] . $me-&gt;encode_html($m[2], 1) . $m[3])'), $str);
 00796 
 00797       <span class="comment">// encode blockcode tag (an XHTML 2 tag) and encode it's</span>
 00798       <span class="comment">// content by default</span>
 00799       $str = preg_replace_callback('{(&lt;blockcode(?: [^&gt;]+)?&gt;)(.+?)(&lt;/blockcode&gt;)}s',
-00800                                    $this-&gt;_cb('<span class="stringliteral">"\n\n"</span> . $this-&gt;_repl($this-&gt;repl[0], $m[1] . $this-&gt;encode_html($m[2], 1) . $m[3]) . <span class="stringliteral">"\n\n"</span>'), $str);
+00800                                    $this-&gt;_cb('<span class="stringliteral">"\n\n"</span> . $me-&gt;_repl($me-&gt;repl[0], $m[1] . $me-&gt;encode_html($m[2], 1) . $m[3]) . <span class="stringliteral">"\n\n"</span>'), $str);
 00801 
 00802       <span class="comment">// preserve PHPish, ASPish code</span>
-00803       $str = preg_replace_callback('!(&lt;([\?%]).*?(\2)&gt;)!s', $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $m[1])'), $str);
+00803       $str = preg_replace_callback('!(&lt;([\?%]).*?(\2)&gt;)!s', $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $m[1])'), $str);
 00804     }
 00805 
 00806     <span class="comment">// pass through and remove links that follow this format</span>
@@ -429,7 +429,7 @@
 00809     <span class="comment">// referred to using the "link text":id_without_spaces syntax</span>
 00810     <span class="comment">//$links = array();</span>
 00811     $str = preg_replace_callback('{(?:\n|^) [ ]* \[ ([^ ]+?) [ ]*? (?:\( (.+?) \) )?  \] ((?:(?:ftp|https?|telnet|nntp):<span class="comment">//|/)[^ ]+?) [ ]* (\n|$)}mx',</span>
-00812                                  $this-&gt;_cb('($this-&gt;links[$m[1]] = array(<span class="stringliteral">"url"</span> =&gt; $m[3], <span class="stringliteral">"title"</span> =&gt; $m[2])) ? $m[4] : $m[4]'), $str);
+00812                                  $this-&gt;_cb('($me-&gt;links[$m[1]] = array(<span class="stringliteral">"url"</span> =&gt; $m[3], <span class="stringliteral">"title"</span> =&gt; $m[2])) ? $m[4] : $m[4]'), $str);
 00813     <span class="comment">//$this-&gt;links = $links;</span>
 00814 
 00815     <span class="comment">// eliminate starting/ending blank lines</span>
@@ -648,7 +648,7 @@
 01028         $para = preg_replace_callback('{(?:^|(?&lt;=[\s&gt;])|([{[]))
 01029                                         ==(.+?)==
 01030                                         (?:$|([\]}])|(?=' . $this-&gt;punct . '{1,2}|\s))}sx',
-01031                                       $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $this-&gt;format_block(array(<span class="stringliteral">"text"</span> =&gt; $m[2], <span class="stringliteral">"inline"</span> =&gt; 1, <span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"post"</span> =&gt; $m[3])))'), $para);
+01031                                       $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $me-&gt;format_block(array(<span class="stringliteral">"text"</span> =&gt; $m[2], <span class="stringliteral">"inline"</span> =&gt; 1, <span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"post"</span> =&gt; $m[3])))'), $para);
 01032         $buffer .= $this-&gt;encode_html_basic($para, 1);
 01033         $buffer = preg_replace('/&amp;lt;textile#(\d+)&amp;gt;/', '&lt;textile#$1&gt;', $buffer);
 01034         <span class="keywordflow">if</span> ($sticky == 0) {
@@ -807,7 +807,7 @@
 01206     $buffer = preg_replace_callback('{(?:^|(?&lt;=[\s&gt;])|([{[]))
 01207                                       ==(.+?)==
 01208                                       (?:$|([\]}])|(?=' . $this-&gt;punct . '{1,2}|\s))}sx',
-01209                                     $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $this-&gt;format_block(array(<span class="stringliteral">"text"</span> =&gt; $m[2], <span class="stringliteral">"inline"</span> =&gt; 1, <span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"post"</span> =&gt; $m[3])))'), $buffer);
+01209                                     $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $me-&gt;format_block(array(<span class="stringliteral">"text"</span> =&gt; $m[2], <span class="stringliteral">"inline"</span> =&gt; 1, <span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"post"</span> =&gt; $m[3])))'), $buffer);
 01210 
 01211     unset($tokens);
 01212     <span class="keywordflow">if</span> (preg_match('/&lt;/', $buffer) &amp;&amp; (!$this-&gt;disable_html())) {  <span class="comment">// optimization -- no point in tokenizing if we</span>
@@ -892,7 +892,7 @@
 01310 
 01311     array_unshift($this-&gt;repl, array());
 01312 
-01313     $text = preg_replace_callback(<span class="charliteral">'{'</span> . $this-&gt;codere . '}mx', $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $this-&gt;format_code(array(<span class="stringliteral">"text"</span> =&gt; $m[2] . $m[4], <span class="stringliteral">"lang"</span> =&gt; $m[1] . $m[3])))'), $text);
+01313     $text = preg_replace_callback(<span class="charliteral">'{'</span> . $this-&gt;codere . '}mx', $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $me-&gt;format_code(array(<span class="stringliteral">"text"</span> =&gt; $m[2] . $m[4], <span class="stringliteral">"lang"</span> =&gt; $m[1] . $m[3])))'), $text);
 01314 
 01315     <span class="comment">// images must be processed before encoding the text since they might</span>
 01316     <span class="comment">// have the &lt;, &gt; alignment specifiers...</span>
@@ -909,7 +909,7 @@
 01327                                     !                            # closing
 01328                                     (?::(\d+|' . $this-&gt;urlre . '))? # $7: optional URL
 01329                                     (?:$|([\]}])|(?=' . $this-&gt;punct . '{1,2}|\s)) # $8: closing brace/bracket
-01330                                    }mx', $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $this-&gt;format_image(array(<span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"src"</span> =&gt; $m[5], <span class="stringliteral">"align"</span> =&gt; ($m[2] ? $m[2] : $m[4]), <span class="stringliteral">"extra"</span> =&gt; $m[6], <span class="stringliteral">"url"</span> =&gt; $m[7], <span class="stringliteral">"clsty"</span> =&gt; $m[3], <span class="stringliteral">"post"</span> =&gt; $m[8])))'), $text);
+01330                                    }mx', $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $me-&gt;format_image(array(<span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"src"</span> =&gt; $m[5], <span class="stringliteral">"align"</span> =&gt; ($m[2] ? $m[2] : $m[4]), <span class="stringliteral">"extra"</span> =&gt; $m[6], <span class="stringliteral">"url"</span> =&gt; $m[7], <span class="stringliteral">"clsty"</span> =&gt; $m[3], <span class="stringliteral">"post"</span> =&gt; $m[8])))'), $text);
 01331 
 01332     $text = preg_replace_callback('{(?:^|(?&lt;=[\s&gt;])|([{[]))     # $1: open brace/bracket
 01333                                     %                           # opening
@@ -921,7 +921,7 @@
 01339                                     %                           # closing
 01340                                     (?::(\d+|' . $this-&gt;urlre . '))? # $6: optional URL
 01341                                     (?:$|([]}])|(?=' . $this-&gt;punct . '{1,2}|\s)) # $7: closing brace/bracket
-01342                                    }mx', $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $this-&gt;format_span(array(<span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"text"</span> =&gt; $m[5], <span class="stringliteral">"align"</span> =&gt; ($m[2] ? $m[2] : $m[4]), <span class="stringliteral">"cite"</span> =&gt; $m[6], <span class="stringliteral">"clsty"</span> =&gt; $m[3], <span class="stringliteral">"post"</span> =&gt; $m[7])))'), $text);
+01342                                    }mx', $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $me-&gt;format_span(array(<span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"text"</span> =&gt; $m[5], <span class="stringliteral">"align"</span> =&gt; ($m[2] ? $m[2] : $m[4]), <span class="stringliteral">"cite"</span> =&gt; $m[6], <span class="stringliteral">"clsty"</span> =&gt; $m[3], <span class="stringliteral">"post"</span> =&gt; $m[7])))'), $text);
 01343 
 01344     $text = $this-&gt;encode_html($text);
 01345     $text = preg_replace('!&amp;lt;textile#(\d+)&amp;gt;!', '&lt;textile#$1&gt;', $text);
@@ -953,7 +953,7 @@
 01371 <span class="stringliteral">                                    :(.+?)                                           # $8: URL suffix</span>
 01372 <span class="stringliteral">                                    [\]}]</span>
 01373 <span class="stringliteral">                                   )</span>
-01374 <span class="stringliteral">                                   }mx', $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $this-&gt;format_link(array("</span>text<span class="stringliteral">" =&gt; $m[1], "</span>linktext<span class="stringliteral">" =&gt; $m[3] . $m[6], "</span>title<span class="stringliteral">" =&gt; $this-&gt;encode_html_basic($m[4] . $m[7]), "</span>url<span class="stringliteral">" =&gt; $m[8], "</span>clsty<span class="stringliteral">" =&gt; $m[2] . $m[5])))'), $text);</span>
+01374 <span class="stringliteral">                                   }mx', $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $me-&gt;format_link(array("</span>text<span class="stringliteral">" =&gt; $m[1], "</span>linktext<span class="stringliteral">" =&gt; $m[3] . $m[6], "</span>title<span class="stringliteral">" =&gt; $me-&gt;encode_html_basic($m[4] . $m[7]), "</span>url<span class="stringliteral">" =&gt; $m[8], "</span>clsty<span class="stringliteral">" =&gt; $m[2] . $m[5])))'), $text);</span>
 01375 <span class="stringliteral"></span>
 01376 <span class="stringliteral">    $text = preg_replace_callback('{((?:^|(?&lt;=[\s&gt;\(]))                              # $1: open brace/bracket</span>
 01377 <span class="stringliteral">                                    (?: (?:"</span>                                         # quote character <span class="stringliteral">"</span>
@@ -972,7 +972,7 @@
 01390 <span class="stringliteral">                                    )</span>
 01391 <span class="stringliteral">                                    :(\d+|' . $this-&gt;urlre . ')                      # $8: URL suffix</span>
 01392 <span class="stringliteral">                                    (?:$|(?=' . $this-&gt;punct . '{1,2}|\s)))          # $9: closing brace/bracket</span>
-01393 <span class="stringliteral">                                   }mx', $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $this-&gt;format_link(array("</span>text<span class="stringliteral">" =&gt; $m[1], "</span>linktext<span class="stringliteral">" =&gt; $m[3] . $m[6], "</span>title<span class="stringliteral">" =&gt; $this-&gt;encode_html_basic($m[4] . $m[7]), "</span>url<span class="stringliteral">" =&gt; $m[8], "</span>clsty<span class="stringliteral">" =&gt; $m[2] . $m[5])))'), $text);</span>
+01393 <span class="stringliteral">                                   }mx', $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $me-&gt;format_link(array("</span>text<span class="stringliteral">" =&gt; $m[1], "</span>linktext<span class="stringliteral">" =&gt; $m[3] . $m[6], "</span>title<span class="stringliteral">" =&gt; $me-&gt;encode_html_basic($m[4] . $m[7]), "</span>url<span class="stringliteral">" =&gt; $m[8], "</span>clsty<span class="stringliteral">" =&gt; $m[2] . $m[5])))'), $text);</span>
 01394 <span class="stringliteral"></span>
 01395 <span class="stringliteral">    if (preg_match('/^xhtml2/', $this-&gt;flavor())) {</span>
 01396 <span class="stringliteral">      // citation with cite link</span>
@@ -982,7 +982,7 @@
 01400                                       \?\?                                           # closing \'??\'
 01401                                       :(\d+|' . $this-&gt;urlre . ')                    # $3: optional citation URL
 01402                                       (?:$|([\]}])|(?=' . $this-&gt;punct . '{1,2}|\s)) # $4: closing brace/bracket
-01403                                      }mx', $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0], $this-&gt;format_cite(array(<span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"text"</span> =&gt; $m[2], <span class="stringliteral">"cite"</span> =&gt; $m[3], <span class="stringliteral">"post"</span> =&gt; $m[4])))'), $text);
+01403                                      }mx', $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0], $me-&gt;format_cite(array(<span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"text"</span> =&gt; $m[2], <span class="stringliteral">"cite"</span> =&gt; $m[3], <span class="stringliteral">"post"</span> =&gt; $m[4])))'), $text);
 01404     }
 01405 
 01406     <span class="comment">// footnotes</span>
@@ -995,7 +995,7 @@
 01413 
 01414     <span class="comment">// translate macros:</span>
 01415     $text = preg_replace_callback('{(\{)(.+?)(\})}x',
-01416                                   $this-&gt;_cb('$this-&gt;format_macro(array(<span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"post"</span> =&gt; $m[3], <span class="stringliteral">"macro"</span> =&gt; $m[2]))'), $text);
+01416                                   $this-&gt;_cb('$me-&gt;format_macro(array(<span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"post"</span> =&gt; $m[3], <span class="stringliteral">"macro"</span> =&gt; $m[2]))'), $text);
 01417 
 01418     <span class="comment">// these were present with textile 1 and are common enough</span>
 01419     <span class="comment">// to not require macro braces...</span>
@@ -1024,7 +1024,7 @@
 01442                                                       ([^' . $cls . '\s].*?)                         # $3 - content
 01443                                                       (?&lt;=\S)' . $qf . '                             #
 01444                                                       (?:$|([\]}])|(?=' . $this-&gt;punct . '{1,2}|\s)) # $4 - post
-01445                                                      }mx', $this-&gt;_cb('$this-&gt;format_tag(array(<span class="stringliteral">"tag"</span> =&gt; end($this-&gt;tmp[<span class="stringliteral">"r"</span>]), <span class="stringliteral">"marker"</span> =&gt; end($this-&gt;tmp[<span class="stringliteral">"f"</span>]), <span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"text"</span> =&gt; $m[3], <span class="stringliteral">"clsty"</span> =&gt; $m[2], <span class="stringliteral">"post"</span> =&gt; $m[4]))'), $text))) {
+01445                                                      }mx', $this-&gt;_cb('$me-&gt;format_tag(array(<span class="stringliteral">"tag"</span> =&gt; end($me-&gt;tmp[<span class="stringliteral">"r"</span>]), <span class="stringliteral">"marker"</span> =&gt; end($me-&gt;tmp[<span class="stringliteral">"f"</span>]), <span class="stringliteral">"pre"</span> =&gt; $m[1], <span class="stringliteral">"text"</span> =&gt; $m[3], <span class="stringliteral">"clsty"</span> =&gt; $m[2], <span class="stringliteral">"post"</span> =&gt; $m[4]))'), $text))) {
 01446           $redo = ($redo || ($last != $text));
 01447           $last = $text;
 01448         }
@@ -1037,14 +1037,14 @@
 01455 
 01456     <span class="comment">// ABC(Aye Bee Cee) -&gt; acronym</span>
 01457     $text = preg_replace_callback('{\b([A-Z][A-Za-z0-9]*?[A-Z0-9]+?)\b(?:[(]([^)]*)[)])}',
-01458                                   $this-&gt;_cb('$this-&gt;_repl($this-&gt;repl[0],<span class="stringliteral">"&lt;acronym title=\""</span> . $this-&gt;encode_html_basic($m[2]) . <span class="stringliteral">"\"&gt;$m[1]&lt;/acronym&gt;"</span>)'), $text);
+01458                                   $this-&gt;_cb('$me-&gt;_repl($me-&gt;repl[0],<span class="stringliteral">"&lt;acronym title=\""</span> . $me-&gt;encode_html_basic($m[2]) . <span class="stringliteral">"\"&gt;$m[1]&lt;/acronym&gt;"</span>)'), $text);
 01459 
 01460     <span class="comment">// ABC -&gt; 'capped' span</span>
 01461     <span class="keywordflow">if</span> ($this-&gt;tmp['caps'][] = $this-&gt;options['css']['class_caps']) {
 01462       $text = preg_replace_callback('/(^|[^<span class="stringliteral">"][&gt;\s])  # "</span>
 01463                                       ((?:[A-Z](?:[A-Z0-9\.,\']|\&amp;amp;){2,}\ *)+?) # \'
 01464                                       (?=[^A-Z\.0-9]|$)
-01465                                      /mx', $this-&gt;_cb('$m[1] . $this-&gt;_repl($this-&gt;repl[0], <span class="stringliteral">"&lt;span class=\""</span> . end($this-&gt;tmp[caps]) . <span class="stringliteral">"\"&gt;$m[2]&lt;/span&gt;"</span>)'), $text);
+01465                                      /mx', $this-&gt;_cb('$m[1] . $me-&gt;_repl($me-&gt;repl[0], <span class="stringliteral">"&lt;span class=\""</span> . end($me-&gt;tmp[<span class="stringliteral">"caps"</span>]) . <span class="stringliteral">"\"&gt;$m[2]&lt;/span&gt;"</span>)'), $text);
 01466     }
 01467     array_pop($this-&gt;tmp['caps']);
 01468 
@@ -1415,7 +1415,7 @@
 02088     }
 02089     $url = preg_replace('/&amp;(?!amp;)/', '&amp;amp;', $url);
 02090     $url = preg_replace('/\ /', <span class="charliteral">'+'</span>, $url);
-02091     $url = preg_replace_callback('/^((?:.+?)\?)(.+)$/', $this-&gt;_cb('$m[1] . $this-&gt;encode_url($m[2])'), $url);
+02091     $url = preg_replace_callback('/^((?:.+?)\?)(.+)$/', $this-&gt;_cb('$m[1] . $me-&gt;encode_url($m[2])'), $url);
 02092     <span class="keywordflow">return</span> $url;
 02093   } <span class="comment">// function format_url</span>
 02094 
@@ -2083,7 +2083,7 @@
 02942 <span class="stringliteral">      '"</span>y' =&gt; '&amp;#255;', <span class="comment">// LATIN SMALL LETTER Y WITH DIAERESIS</span>
 02943       'OE' =&gt; '&amp;#338;', <span class="comment">// LATIN CAPITAL LIGATURE OE</span>
 02944       'oe' =&gt; '&amp;#339;', <span class="comment">// LATIN SMALL LIGATURE OE</span>
-02945       <span class="charliteral">'*'</span> =&gt; '&amp;#2022;', <span class="comment">// BULLET</span>
+02945       <span class="charliteral">'*'</span> =&gt; '&amp;#8226;', <span class="comment">// BULLET</span>
 02946       'Fr' =&gt; '&amp;#8355;', <span class="comment">// FRENCH FRANC SIGN</span>
 02947       'L=' =&gt; '&amp;#8356;', <span class="comment">// LIRA SIGN</span>
 02948       '=L' =&gt; '&amp;#8356;', <span class="comment">// LIRA SIGN</span>
@@ -2223,12 +2223,12 @@
 03225 <span class="comment">     * use to determine newer/older versions for upgrade and</span>
 03226 <span class="comment">     * installation purposes.</span>
 03227 <span class="comment">     */</span>
-03228     <span class="keywordflow">return</span> array(<span class="stringliteral">"text"</span> =&gt; <span class="stringliteral">"2.0.2"</span>, <span class="stringliteral">"build"</span> =&gt; 2004052800);
+03228     <span class="keywordflow">return</span> array(<span class="stringliteral">"text"</span> =&gt; <span class="stringliteral">"2.0.4"</span>, <span class="stringliteral">"build"</span> =&gt; 2004072800);
 03229   } <span class="comment">// function version</span>
 03230 
 <a name="l03243"></a><a class="code" href="classTextile.html#d33">03243</a>   function _cb($function) {
 03244     $current =&amp; <a class="code" href="classTextile.html#h0">Textile::_current_store</a>($<span class="keyword">this</span>);
-03245     <span class="keywordflow">return</span> create_function('$m', '$<span class="keyword">this</span> =&amp; <a class="code" href="classTextile.html#h1">Textile::_current</a>(); <span class="keywordflow">return</span> ' . $function . <span class="charliteral">';'</span>);
+03245     <span class="keywordflow">return</span> create_function('$m', '$me =&amp; <a class="code" href="classTextile.html#h1">Textile::_current</a>(); <span class="keywordflow">return</span> ' . $function . <span class="charliteral">';'</span>);
 03246   } <span class="comment">// function _cb</span>
 03247 
 <a name="l03263"></a><a class="code" href="classTextile.html#h0">03263</a>  <span class="comment">/* static */</span> function &amp;_current_store(&amp;$<span class="keyword">new</span>) {
@@ -2291,7 +2291,7 @@
 03395 } <span class="comment">// class MTLikeTextile</span>
 03396 
 04080 ?&gt;
-</div></pre><hr size="1"><address style="align: right;"><small>Generated on Fri May 28 12:08:13 2004 for TextilePHP by
+</div></pre><hr size="1"><address style="align: right;"><small>Generated on Wed Jul 28 10:44:32 2004 for TextilePHP by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border=0 ></a> 1.3.7 </small></address>
 </body>

@@ -2,6 +2,14 @@ TextilePHP
 CHANGELOG
 @(#) $Id$
 
+2004-07-28
+  - release 2.0.4/2004072800
+  - Textile.php: updated for (non-strict) PHP5-compliance
+
+2004-06-03
+  - release 2.0.3/2004060300
+  - Textile.php: fixed bullet default macro (fixes bug 52)
+
 2004-05-28
   - release 2.0.2/2004052800
   - Textile.php: added MTLikeTextile class that produces output more
