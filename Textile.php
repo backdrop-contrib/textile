@@ -807,10 +807,10 @@ class Textile {
     // [id_without_spaces (optional title text)]url
     // lines like this are stripped from the content, and can be
     // referred to using the "link text":id_without_spaces syntax
-    $links = array();
+    //$links = array();
     $str = preg_replace_callback('{(?:\n|^) [ ]* \[ ([^ ]+?) [ ]*? (?:\( (.+?) \) )?  \] ((?:(?:ftp|https?|telnet|nntp)://|/)[^ ]+?) [ ]* (\n|$)}mx',
-                                 $this->_cb('($links[$m[1]] = array("url" => $m[3], "title" => $m[2])) ? $m[4] : $m[4]'), $str);
-    $this->links = $links;
+                                 $this->_cb('($this->links[$m[1]] = array("url" => $m[3], "title" => $m[2])) ? $m[4] : $m[4]'), $str);
+    //$this->links = $links;
 
     // eliminate starting/ending blank lines
     $str = preg_replace('/^\n+/s', '', $str, 1);
@@ -3225,7 +3225,7 @@ class Textile {
      * use to determine newer/older versions for upgrade and
      * installation purposes.
      */
-    return array("text" => "2.0", "build" => 2004052300);
+    return array("text" => "2.0.1", "build" => 2004052500);
   } // function version
 
 /**
