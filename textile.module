@@ -1,0 +1,841 @@
+<?php
+// $Id$
+
+/**
+ * The textile module allows input of Textile version 1 and 2b text
+ * into the body and teaser of a node. The version used -- 1, 2, or
+ * none -- can be set on a per-node basis.
+ *
+ * @version $Id$
+ * @copyright Copyright (c) 2003 Jim Riggs.  All rights reserved.
+ * @author Jim Riggs <drupal at jim and lissa dot com>
+ */
+
+/* This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ */
+
+/* Code notes:
+ *   - I believe I have followed the prescribed coding standards, but
+ *     if you find something amiss, let me know.
+ *
+ *   - Local, non-boolean variables start with "the" as in $the_output
+ *     and $the_version.  Local boolean variables start with words such
+ *     as "is" or "has" to indicate their meaning as in $is_installed
+ *     and $has_title.  Short-lived loop variables use standard, short
+ *     names as in $i and $x.
+ *
+ *   - Function parameters are prefixed with "in", "out", or "io" to
+ *     indicate their use as input, output, or input-output,
+ *     respectively, as in $in_title.
+ *
+ *   - All functions are prefixed with "textile_" and words are
+ *     separated with underscores.
+ *
+ *   - I make extensive use of heredoc syntax.  It looks much nicer
+ *     than dozens of "$var .= ..." lines and is easier to read and
+ *     format -- especially the HTML tags.  It helps in outputting
+ *     HTML pages that are well-formatted and readable.
+ */
+
+/********************************************************************
+ * Drupal Hooks
+ ********************************************************************/
+
+/**
+ * Drupal hook that displays a page with Textile syntax help.
+ */
+function textile_page() {
+  theme("header");
+  
+  if (!user_access("access content")) {
+    theme("box", t("Access Denied"), message_access());
+    theme("footer");
+
+    return;
+  }
+
+  if (intval(arg(1)) == 1) {
+    $the_output = <<<EOT
+<h1>Textile v1 Help</h1>
+
+<p>
+  Below is help for Textile version 1. <a href="textile">Help for
+  version 2</a> is also available. For more information, visit the <a
+  href="http://textism.com/tools/textile/" title="Textile">Textile
+  home page</a>.
+</p>
+
+<hr>
+
+<h2>Block modifier syntax:</h2>
+<table>
+<tr>
+  <th>textile input</th>
+  <th>HTML output</th>
+  <th>example output</th>
+</tr>
+<tr class="dark">
+  <td colspan="3">
+    <h3>Headings</h3>
+  </td>
+</tr>
+<tr class="light">
+  <td>h1. Heading</td>
+  <td>&lt;h1&gt;Heading&lt;/h1&gt;</td>
+  <td><h1>Heading</h1></td>
+</tr>
+<tr class="light">
+  <td>h2(class). Heading with class</td>
+  <td>&lt;h2 class="class"&gt;Heading with class&lt;/h2&gt;</td>
+  <td><h2 class="class">Heading with class</h2></td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Paragraphs</h3></td>
+</tr>
+<tr class="light">
+  <td>p. Text</td>
+  <td>&lt;p&gt;Text&lt;/p&gt;</td>
+  <td><p>Text</p></td>
+</tr>
+<tr class="light">
+  <td>p(class). Text</td>
+  <td>&lt;p class="class"&gt;Text&lt;/p&gt;</td>
+  <td><p class="class">Text</p>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Block quotes</h3></td>
+</tr>
+<tr class="light">
+  <td>bq. Block quote</td>
+  <td>&lt;blockquote&gt;Block quote&lt;/blockquote&gt;</td>
+  <td><blockquote>Block quote</blockquote></td>
+</tr>
+<tr class="light">
+  <td>bq(url). Quote with citation</td>
+  <td>
+    &lt;blockquote cite="url"&gt;Quote with
+    citation&lt;/blockquote&gt;
+  </td>
+  <td><blockquote cite="url">Quote with citation</blockquote></td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Ordered lists</h3></td>
+</tr>
+<tr class="light">
+  <td>
+    # Item 1<br />
+    # Item 2
+  </td>
+  <td>
+    &lt;ol&gt;<br />
+    &nbsp;&lt;li&gt;Item 1&lt;/li&gt;<br />
+    &nbsp;&lt;li&gt;Item 2&lt;/li&gt;<br />
+    &lt;/ol&gt;
+  </td>
+  <td>
+    <ol>
+      <li>Item 1</li>
+      <li>Item 2</li>
+    </ol>
+  </td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Unordered lists</h3></td>
+</tr>
+<tr class="light">
+  <td>
+    * Item 1<br />
+    * Item 2
+  </td>
+  <td>
+    &lt;ul&gt;<br />
+    &nbsp;&lt;li&gt;Item 1&lt;/li&gt;<br />
+    &nbsp;&lt;li&gt;Item 2&lt;/li&gt;<br />
+    &lt;/ul&gt;
+  </td>
+  <td>
+    <ul>
+      <li>Item 1</li>
+      <li>Item 2</li>
+    </ul>
+  </td>
+</tr>
+</table>
+
+<hr>
+
+<h2>Phrase modifier syntax:</h2>
+<table>
+<tr>
+  <th>textile input</th>
+  <th>HTML output</th>
+  <th>example output</th>
+</tr>
+<tr class="dark">
+  <td>_emphasis_</td>
+  <td>&lt;em&gt;emphasis&lt;/em&gt;</td>
+  <td><em>emphasis</em></td>
+</tr>
+<tr class="light">
+  <td>__italic__</td>
+  <td>&lt;i&gt;italic&lt;/i&gt;</td>
+  <td><i>italic</i></td>
+</tr>
+<tr class="dark">
+  <td>*strong*</td>
+  <td>&lt;strong&gt;strong&lt;/strong&gt;</td>
+  <td><strong>strong</strong></td>
+</tr>
+<tr class="light">
+  <td>**bold**</td>
+  <td>&lt;b&gt;bold&lt;/b&gt;</td>
+  <td><b>bold</b></td>
+</tr>
+<tr class="dark">
+  <td>??citation??</td>
+  <td>&lt;cite&gt;citation&lt;/cite&gt;</td>
+  <td><cite>citation</cite></td>
+</tr>
+<tr class="light">
+  <td>-delete text-</td>
+  <td>&lt;del&gt;deleted text&lt;/del&gt;</td>
+  <td><del>deleted text</del></td>
+</tr>
+<tr class="dark">
+  <td>+inserted text+</td>
+  <td>&lt;ins&gt;inserted text&lt;/ins&gt;</td>
+  <td><ins>inserted text</ins></td>
+</tr>
+<tr class="light">
+  <td>^superscript^</td>
+  <td>&lt;sup&gt;superscript&lt;/sup&gt;</td>
+  <td><sup>superscript</sup></td>
+</tr>
+<tr class="dark">
+  <td>~subscript~</td>
+  <td>&lt;sub&gt;subscript&lt;/sub&gt;</td>
+  <td><sub>subscript</sub></td>
+</tr>
+<tr class="light">
+  <td>@code@</td>
+  <td>&lt;code&gt;code&lt;/code&gt;</td>
+  <td><code>code</code></td>
+</tr>
+<tr class="dark">
+  <td>==no textile==</td>
+  <td>no textile</td>
+  <td>no textile</td>
+</tr>
+<tr class="light">
+  <td>"link text":url</td>
+  <td>&lt;a href="url"&gt;link text&lt;/a&gt;</td>
+  <td><a href="url">link text</a></td>
+</tr>
+<tr class="dark">
+  <td>"link text(title)":url</td>
+  <td>&lt;a href="url" title="title"&gt;link text&lt;/a&gt;</td>
+  <td><a href="url" title="title">link text</a></td>
+</tr>
+<tr class="light">
+  <td>!imageurl!</td>
+  <td>&lt;img src="imageurl" /&gt;</td>
+  <td><img src="imageurl" /></td>
+</tr>
+<tr class="dark">
+  <td>!imageurl(alt text)!</td>
+  <td>&lt;img src="imageurl" alt="alt text" /&gt;</td>
+  <td><img src="imageurl" alt="alt text" /></td>
+</tr>
+<tr class="light">
+  <td>!imageurl!:url</td>
+  <td>&lt;a href="url"&gt;&lt;img src="imageurl" /&gt;&lt;/a&gt;</td>
+  <td><a href="imageurl"><img src="imageurl" /></a></td>
+</tr>
+<tr class="dark">
+  <td>ABC(Always Be Closing)</td>
+  <td>&lt;acronym title="Always Be Closing"&gt;ABC&lt;/acronym&gt;</td>
+  <td><acronym title="Always Be Closing">ABC</acronym></td>
+</tr>
+</table>
+
+EOT;
+  }
+  else {
+    $the_output = <<<EOT
+<h1>Textile v2b Help</h1>
+
+<p>
+  Below is help for Textile version 2. <a href="textile/1">Help for
+  version 1</a> is also available. For more information, visit the <a
+  href="http://textism.com/tools/textile/" title="Textile">Textile
+  home page</a>.
+</p>
+
+<hr>
+
+<h2>Block modifier syntax:</h2>
+<p>
+  CSS attributes can be applied to blocks. CSS classes are specifed as
+  "<code>(<i>class</i>)</code>"; CSS IDs are specified with
+  "<code>(#<i>id</i>)</code>"; both can be specified with
+  "<code>(<i>class</i>#<i>id</i>)</code>". An arbtirary CSS style can
+  be applied by using "<code>{<i>style</i>}</code>". Finally, language
+  attributes are applied using "<code>[<i>language</i>]</code>".
+</p>
+<p>
+  Additionally, alignment and indentation shorthands are provided. To
+  left-align, right-align, center, and justify text, use
+  "<code>&lt;</code>", "<code>&gt;</code>", "<code>=</code>", and
+  "<code>&lt;&gt;</code>", respectively. "<code>(</code>" left-indents
+  a block 1em for each occurrence, and "<code>)</code>" right-indents
+  similarly.
+</p>
+<p>
+  Tables have additional options. "<code>^</code>", "<code>-</code>",
+  and "<code>~</code>" specify top, middle, and bottom vertical
+  alignment. The "<code>_</code>" attribute on a cell indicates that
+  it is a table header.
+</p>
+<p>
+  The examples below illustrate these attributes.
+</p>
+
+<table>
+<tr>
+  <th>textile input</th>
+  <th>HTML output</th>
+  <th>example output</th>
+</tr>
+
+<tr class="dark">
+  <td colspan="3">
+    <h3>Headings</h3>
+    <code>h<i>x</i>.</code> (where <i>x</i> is 1 - 6)
+  </td>
+</tr>
+<tr class="light">
+  <td>h1. Heading</td>
+  <td>&lt;h1&gt;Heading&lt;/h1&gt;</td>
+  <td><h1>Heading</h1></td>
+</tr>
+<tr class="light">
+  <td>h2(class). Heading with class</td>
+  <td>&lt;h2 class="class"&gt;Heading with class&lt;/h2&gt;</td>
+  <td><h2 class="class">Heading with class</h2></td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Paragraphs</h3></td>
+</tr>
+<tr class="light">
+  <td>p=. Centered text</td>
+  <td>&lt;p style="text-align:center;"&gt;Centered text&lt;/p&gt;</td>
+  <td><p style="text-align:center;">Centered text</p></td>
+</tr>
+<tr class="light">
+  <td>p())(#id). Indented text with ID</td>
+  <td>
+    &lt;p style="padding-left:1em;padding-right:2em;"
+    id="id"&gt;Indented text with ID&lt;/p&gt;
+  </td>
+  <td>
+    <p style="padding-left:1em;padding-right:2em;" id="id">Indented
+    text with ID</p>
+  </td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Block quotes</h3></td>
+</tr>
+<tr class="light">
+  <td>bq(class#id). Quote with class and ID</td>
+  <td>
+    &lt;blockquote class="class" id="id"&gt;Quote with class and
+    ID&lt;/blockquote&gt;
+  </td>
+  <td>
+    <blockquote class="class" id="id">Quote with class and
+    ID</blockquote>
+  </td>
+</tr>
+<tr class="light">
+  <td>bq[en]:url. English quote with citation</td>
+  <td>
+    &lt;blockquote lang="en" cite="url"&gt;English quote with
+    citation&lt;/blockquote&gt;
+  </td>
+  <td>
+    <blockquote lang="en" cite="url">English quote with
+    citation</blockquote>
+  </td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Ordered lists</h3></td>
+</tr>
+<tr class="light">
+  <td>
+    #{color: blue} Attributes are specified<br />
+    # for the first item and<br />
+    # affect the whole list
+  </td>
+  <td>
+    &lt;ol style="color:blue;"&gt;<br />
+    &nbsp;&lt;li&gt;Attributes are specified&lt;/li&gt;<br />
+    &nbsp;&lt;li&gt;for the first item and&lt;/li&gt;<br />
+    &nbsp;&lt;li&gt;affect the whole list&lt;/li&gt;<br />
+    &lt;/ol&gt;
+  </td>
+  <td>
+    <ol style="color:blue;">
+      <li>Attributes are specified</li>
+      <li>for the first item and</li>
+      <li>affect the whole list</li>
+    </ol>
+  </td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Unordered lists</h3></td>
+</tr>
+<tr class="light">
+  <td>
+    * Lists can have<br />
+    ## subitems or<br />
+    ## sublists<br />
+    * too
+  </td>
+  <td>
+    &lt;ul&gt;<br />
+    &nbsp;&lt;li&gt;Lists can have<br />
+    &nbsp;&nbsp;&lt;ol&gt;<br />
+    &nbsp;&nbsp;&nbsp;&lt;li&gt;subitems or<br />
+    &nbsp;&nbsp;&nbsp;&lt;li&gt;sublists<br />
+    &nbsp;&nbsp;&lt;/ol&gt;<br />
+    &nbsp;&lt;/li&gt;<br />
+    &nbsp;&lt;li&gt;too&lt;/li&gt;<br />
+    &lt;/ul&gt;
+  </td>
+  <td>
+    <ul>
+      <li>Lists can have
+        <ol>
+          <li>subitems or</li>
+          <li>sublists</li>
+        </ol>
+      </li>
+      <li>too</li>
+    </ul>
+  </td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3">
+    <h3>Footnotes</h3>
+    <code>fn<i>x</i>.</code> (where <i>x</i> is 1 - 100)
+  </td>
+</tr>
+<tr class="light">
+  <td>fn17. Footnote</td>
+  <td>
+    &lt;p id="fn17"&gt;&lt;sup&gt;17&lt;/sup&gt; Footnote&lt;/p&gt;
+  </td>
+  <td><p id="fn17"><sup>17</sup> Footnote</p></td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Tables</h3></td>
+</tr>
+<tr class="light">
+  <td>
+    |_. A|_. B|_. C|<br />
+    (dark). |very|simple|table|<br />
+    |<. left|=. center|>. right|<br />
+    |^{height:3em}. top|-. middle|~. bottom|
+  </td>
+  <td>
+    &lt;table&gt;<br />
+    &nbsp;&lt;tr&gt;<br />
+    &nbsp;&nbsp;&lt;th&gt;A&lt;/th&gt;<br />
+    &nbsp;&nbsp;&lt;th&gt;B&lt;/th&gt;<br />
+    &nbsp;&nbsp;&lt;th&gt;C&lt;/th&gt;<br />
+    &nbsp;&lt;/tr&gt;<br />
+    &nbsp;&lt;tr class="dark"&gt;<br />
+    &nbsp;&nbsp;&lt;td&gt;very&lt;/td&gt;<br />
+    &nbsp;&nbsp;&lt;td&gt;simple&lt;/td&gt;<br />
+    &nbsp;&nbsp;&lt;td&gt;table&lt;/td&gt;<br />
+    &nbsp;&lt;/tr&gt;<br />
+    &nbsp;&lt;tr&gt;<br />
+    &nbsp;&nbsp;&lt;td style="text-align:left;"&gt;left&lt;/td&gt;<br />
+    &nbsp;&nbsp;&lt;td style="text-align:center;"&gt;center&lt;/td&gt;<br />
+    &nbsp;&nbsp;&lt;td style="text-align:right;"&gt;right&lt;/td&gt;<br />
+    &nbsp;&lt;/tr&gt;<br />
+    &nbsp;&lt;tr&gt;<br />
+    &nbsp;&nbsp;&lt;td
+    style="vertical-align:top;height:3em;"&gt;top&lt;/td&gt;<br />
+    &nbsp;&nbsp;&lt;td
+    style="vertical-align:middle;"&gt;middle&lt;/td&gt;<br />
+    &nbsp;&nbsp;&lt;td
+    style="vertical-align:bottom;"&gt;bottom&lt;/td&gt;<br />
+    &nbsp;&lt;/tr&gt;<br />
+    &lt;/table&gt;
+  </td>
+  <td>
+    <table>
+    <tr>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+    </tr>
+    <tr class="dark">
+      <td>very</td>
+      <td>simple</td>
+      <td>table</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;">left</td>
+      <td style="text-align:center;">center</td>
+      <td style="text-align:right;">right</td>
+    </tr>
+    <tr>
+      <td style="vertical-align:top;height:3em;">top</td>
+      <td style="vertical-align:middle;">middle</td>
+      <td style="vertical-align:bottom;">bottom</td>
+    </tr>
+    </table>
+  </td>
+</tr>
+</table>
+
+<hr>
+
+<h2>Phrase modifier syntax:</h2>
+<p>
+  The class, ID, style, and language attributes described above also
+  apply to the span phrase modifier as shown below.
+</p>
+
+<table>
+<tr>
+  <th>textile input</th>
+  <th>HTML output</th>
+  <th>example output</th>
+</tr>
+<tr class="dark">
+  <td>_emphasis_</td>
+  <td>&lt;em&gt;emphasis&lt;/em&gt;</td>
+  <td><em>emphasis</em></td>
+</tr>
+<tr class="light">
+  <td>__italic__</td>
+  <td>&lt;i&gt;italic&lt;/i&gt;</td>
+  <td><i>italic</i></td>
+</tr>
+<tr class="dark">
+  <td>*bold*</td>
+  <td>&lt;b&gt;bold&lt;/b&gt;</td>
+  <td><b>bold</b></td>
+</tr>
+<tr class="light">
+  <td>**strong**</td>
+  <td>&lt;strong&gt;strong&lt;/strong&gt;</td>
+  <td><strong>strong</strong></td>
+</tr>
+<tr class="dark">
+  <td>??citation??</td>
+  <td>&lt;cite&gt;citation&lt;/cite&gt;</td>
+  <td><cite>citation</cite></td>
+</tr>
+<tr class="light">
+  <td>-delete text-</td>
+  <td>&lt;del&gt;deleted text&lt;/del&gt;</td>
+  <td><del>deleted text</del></td>
+</tr>
+<tr class="dark">
+  <td>+inserted text+</td>
+  <td>&lt;ins&gt;inserted text&lt;/ins&gt;</td>
+  <td><ins>inserted text</ins></td>
+</tr>
+<tr class="light">
+  <td>^superscript^</td>
+  <td>&lt;sup&gt;superscript&lt;/sup&gt;</td>
+  <td><sup>superscript</sup></td>
+</tr>
+<tr class="dark">
+  <td>~subscript~</td>
+  <td>&lt;sub&gt;subscript&lt;/sub&gt;</td>
+  <td><sub>subscript</sub></td>
+</tr>
+<tr class="light">
+  <td>@code@</td>
+  <td>&lt;code&gt;code&lt;/code&gt;</td>
+  <td><code>code</code></td>
+</tr>
+<tr class="dark">
+  <td>%(class)span%</td>
+  <td>&lt;span class="class"&gt;span&lt;/span&gt;</td>
+  <td><span class="class">span</span></td>
+</tr>
+<tr class="dark">
+  <td>%{color:red;}span%</td>
+  <td>&lt;span style="color:red;"&gt;span&lt;/span&gt;</td>
+  <td><span style="color:red;">span</span></td>
+</tr>
+<tr class="light">
+  <td>==no textile==</td>
+  <td>no textile</td>
+  <td>no textile</td>
+</tr>
+<tr class="dark">
+  <td>"link text":url</td>
+  <td>&lt;a href="url"&gt;link text&lt;/a&gt;</td>
+  <td><a href="url">link text</a></td>
+</tr>
+<tr class="light">
+  <td>"link text(title)":url</td>
+  <td>&lt;a href="url" title="title"&gt;link text&lt;/a&gt;</td>
+  <td><a href="url" title="title">link text</a></td>
+</tr>
+<tr class="dark">
+  <td>!imageurl!</td>
+  <td>&lt;img src="imageurl" /&gt;</td>
+  <td><img src="imageurl" /></td>
+</tr>
+<tr class="light">
+  <td>!imageurl(alt text)!</td>
+  <td>&lt;img src="imageurl" alt="alt text" /&gt;</td>
+  <td><img src="imageurl" alt="alt text" /></td>
+</tr>
+<tr class="dark">
+  <td>!imageurl!:url</td>
+  <td>&lt;a href="url"&gt;&lt;img src="imageurl" /&gt;&lt;/a&gt;</td>
+  <td><a href="imageurl"><img src="imageurl" /></a></td>
+</tr>
+<tr class="light">
+  <td>ABC(Always Be Closing)</td>
+  <td>&lt;acronym title="Always Be Closing"&gt;ABC&lt;/acronym&gt;</td>
+  <td><acronym title="Always Be Closing">ABC</acronym></td>
+</tr>
+<tr class="dark">
+  <td>Footnote reference[17]</td>
+  <td>
+    Footnote reference&lt;sup&gt;&lt;a
+    href="#fn1"&gt;17&lt;/a&gt;&lt;/sup&gt;
+  </td>
+  <td>Footnote reference<sup><a href="#17">17</a></sup></td>
+</tr>
+</table>
+
+EOT;
+  }
+
+  print t($the_output);
+  theme("footer");
+} // function quotes_page
+
+/**
+ * Drupal hook that performs the appropriate Textile filtering on the
+ * provided text. If the text is not using Textile (as indicated by
+ * the presence or absence of a marker), no filtering is applied.
+ *
+ * @param $in_text string The text to be filtered.
+ *
+ * @return string The filtered text.
+ */
+function textile_filter($in_text) {
+  $the_version = _textile_get_version($in_text);
+
+  if ($the_version == 1) {
+    require_once("Textile1.php");
+
+    $the_textile = new Textile1;
+
+    return $the_textile->textile($in_text);
+  }
+  elseif ($the_version == 2) {
+    require_once("Textile2.php");
+
+    $the_textile = new Textile2;
+
+    return $the_textile->textile($in_text);
+  }
+
+  return $in_text;
+} // function textile_filter
+
+/**
+ * Drupal hook that handles node settings, node form items, and filter
+ * marker insertion for the provided node.
+ *
+ * @param object $io_node The node on which the operation is being
+ *        performed.
+ * @param string $in_op The operation being performed.
+ *
+ * @return mixed An array of node settings or form items, as
+ *         appropriate.
+ */
+function textile_nodeapi(&$io_node, $in_op) {
+  switch ($in_op) {
+    case "settings":
+      return array(t("textile") => _textile_select("", "textile_$io_node->type", variable_get("textile_$io_node->type", 0)));
+
+    case "form pre":
+      // get textile settings for this node
+      $the_version = _textile_get_version($io_node->body);
+
+      // remove comment from teaser
+      _textile_get_version($io_node->teaser);
+
+      if (!$io_node->textile_version) {
+        $io_node->textile_version = ($the_version ? $the_version : variable_get("textile_$io_node->type", 0));
+      }
+
+      return _textile_select(t("Textile input"), "textile_version", $io_node->textile_version, t("Select the Textile version to be used for filtering the <b>body</b> and <b>teaser</b> text for this node. [") . l(t("help/examples"), "textile", array("title" => t("Textile help"), "target" => "_blank")) . "]");
+
+    case "validate":
+      // insert the filter marker
+      if ($io_node->textile_version && !$io_node->textile_commented) {
+        $io_node->body =
+          "\001textile$io_node->textile_version\001\n" . $io_node->body;
+        $io_node->teaser =
+          "\001textile$io_node->textile_version\001\n" . $io_node->teaser;
+        $io_node->textile_commented = true;
+      }
+      
+      break;
+  }
+} // function textile_nodeapi
+
+/**
+ * Drupal hook that returns the form items for filter settings.
+ *
+ * @return string The form containing module-specific filter settings.
+ */
+function textile_conf_filters() {
+  return form_select(t("Textile versions"), "textile_filters", variable_get("textile_filters", 0), array(t("Versions 1 and 2b"), t("Version 1"), t("Version 2b")), t("The Textile versions available for filtering content."));
+} // function textile_conf_filters
+
+/**
+ * Drupal hook that returns help text for the specified section.
+ *
+ * @param string $in_section The section for which help is requested.
+ *
+ * @return string The formatted help text.
+ */
+function textile_help($in_section = "admin/help#quotes") {
+  switch ($in_section) {
+    case "admin/node/settings":
+      $the_output = "<br />\n<b>textile:</b> The default Textile version to be used for filtering the node body and teaser.";
+      break;
+
+    case "admin/help#textile":
+      $the_output = <<<EOT
+<p>
+  The Textile module allows you to enter content using <a
+  href="http://textism.com/tools/textile/"
+  title="Textile">Textile</a>, a simple, plain text syntax that is
+  filtered into valid XHTML. The module can filter version one and
+  version two (currently in beta) syntax. Additionally, Textile
+  filtering can be enabled and disabled on a per-node basis. The <a
+  href="textile" title="Textile help">Textile page</a> provides syntax
+  descriptions and examples.
+</p>
+
+EOT;
+      break;
+  }
+
+  return t($the_output);
+} // function textile_help
+
+/********************************************************************
+ * Module Functions
+ ********************************************************************/
+
+/**
+ * Returns the version of this release of the quotes module.
+ *
+ * @return array An array with keys 'text' and 'build' containing the
+ *         text version and build ID of this release, respectively.
+ */
+function _textile_version() {
+  /* Why text and an ID?  Well, the text is easier for the user to
+   * read and understand while the build ID, being a number (a date
+   * with a serial, specifically), is easier for the developer to use
+   * to determine newer/older versions for upgrade and installation
+   * purposes.
+   */
+  return array("text" => "1.0", "build" => 2003110400);
+} // function _textile_version
+
+/**
+ * Returns the Textile version used within the provided text and
+ * strips the Textile marker.
+ *
+ * @param string $io_text The text for which the version is requested
+ *        and from which the marker should be removed.
+ *
+ * @return integer The Textile version used within the provided text.
+ */
+function _textile_get_version(&$io_text) {
+  $the_version = 0;
+
+  if (strpos($io_text, "\001textile1\001\n") !== false) {
+    $the_version = 1;
+    $io_text = str_replace("\001textile1\001\n", "", $io_text);
+  }
+  
+  if (strpos($io_text, "\001textile2\001\n") !== false) {
+    $the_version = 2;
+    $io_text = str_replace("\001textile2\001\n", "", $io_text);
+  }
+  
+  return $the_version;
+} // function _textile_get_version
+
+/**
+ * Returns a "select" form item with the currently-available Textile
+ * versions.
+ *
+ * @param string $in_title The title for the form item.
+ * @param string $in_name The name for the form item.
+ * @param integer $in_selected_ver The selected version.
+ * @param string $in_help The help text for the form item.
+ *
+ * @return string The form item to be displayed.
+ */
+function _textile_select($in_title, $in_name, $in_selected_ver = 0, $in_help = "") {
+  switch (variable_get("textile_filters", 0)) {
+    case 1:
+      $the_options = array(t("none"), t("Textile v1"));
+      break;
+      
+    case 2:
+      $the_options[0] = t("none");
+      $the_options[2] = t("Textile v2b");
+      break;
+      
+    default:
+      $the_options = array(t("none"), t("Textile v1"), t("Textile v2b"));
+      break;
+  }
+
+  return form_select($in_title, $in_name, $in_selected_ver, $the_options, $in_help);
+} // function _textile_select
+?>

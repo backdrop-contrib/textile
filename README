@@ -1,0 +1,53 @@
+textile.module
+README
+$Id$
+
+The Textile module allows you to enter content using Textile, a
+simple, plain text syntax that is filtered into valid XHTML. The
+module can filter version one and version two (currently in beta)
+syntax. Additionally, Textile filtering can be enabled and disabled on
+a per-node basis. The Textile page found at
+<http://your_drupal_site/textile> provides syntax descriptions and
+examples.
+
+More information about Textile can be found at the Textile home page
+<http://textism.com/tools/textile/>.
+
+NOTE: Drupal's current filter implementation is not the most efficient
+and will be reworked in upcoming releases. This module should perform
+well on most sites; however, extremely busy sites may experience a
+performance hit (especially with caching disabled) performing all of
+the regular expression matching involved with Textile.
+
+Files
+  - textile.module
+      the actual module (PHP source code)
+
+  - Textile1.php
+      a modified version of Dean Allen's Textile v1 source code (PHP
+      source code)
+
+  - Textile2.php
+      a modified version of Dean Allen's Textile v2b source code (PHP
+      source code)
+
+  - README (this file)
+      general module information
+
+  - INSTALL
+      installation/configuration instructions
+
+  - CREDITS
+      information on those responsible for this module
+
+  - TODO
+      feature requests and modification suggestions
+
+  - CHANGELOG
+      change/release history for this module
+
+  - LICENSE
+      the license (GNU General Public License) covering the usage,
+      modification, and distribution of this software and its
+      accompanying files, excluding the Textile files which are
+      covered by a separate license
