@@ -2,26 +2,41 @@ textile.module
 CHANGELOG
 $Id$
 
-2004-08-11
-- update for new filter system
+2004-08-25
+  - release 2.1.0/2004082501
+  - NOTE: some of the changes in this release conflict with changes
+    committed to CVS recently by almaw; users that had those changes
+    may need to verify the filter configuration for Textile
+  - textile.module
+    - updated for CVS, including input formats
+    - filter now has a setting (per input format) for specifying
+      whether or not the [textile] and optional [/textile] tags should
+      be used; content converted from older versions will need this
+      option enabled; if a given input format is expected to use
+      Textile, though, the tags are redundant
+  - README: added note about configuration
+
+2004-08-25
+  - release 2.0.5/2004082500
+  - smartypants-php: import of SmartyPants-PHP 1.5.1-r1
 
 2004-07-28
-- release 2.0.4/2004072800
-- textilephp: import of TextilePHP 2.0.4 which is (non-strict)
-  PHP5-compliant
+  - release 2.0.4/2004072800
+  - textilephp: import of TextilePHP 2.0.4 which is (non-strict)
+    PHP5-compliant
 
 2004-05-29
-- release 2.0.3/2004052900
-- textile.module
-  - updated quoting
-  - fixed admin help link
-  - changed heredoc strings to multiline
-  - added @private marks
-  - added DrupalTextile (MTLikeTextile subclass) which fixes footnote
-    links in Drupal context (fixes bug 8037 reported by me)
-- textilephp: import of TextilePHP 2.0.2
-- smartypants-php: import of SmartyPants-PHP 1.4.1-r2
-- Textile.php, SmartyPants-PHP.inc: removed
+  - release 2.0.3/2004052900
+  - textile.module
+    - updated quoting
+    - fixed admin help link
+    - changed heredoc strings to multiline
+    - added @private marks
+    - added DrupalTextile (MTLikeTextile subclass) which fixes footnote
+      links in Drupal context (fixes bug 8037 reported by me)
+  - textilephp: import of TextilePHP 2.0.2
+  - smartypants-php: import of SmartyPants-PHP 1.4.1-r2
+  - Textile.php, SmartyPants-PHP.inc: removed
 
 2004-05-27
   - release 2.0.2/2004052700
