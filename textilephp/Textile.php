@@ -190,7 +190,7 @@ class Textile {
     $this->options['char_encoding'] = ($this->options['char_encoding'] ? $this->options['char_encoding'] : 1);
     $this->options['do_quotes'] = ($this->options['do_quotes'] ? $this->options['do_quotes'] : 1);
     $this->options['trim_spaces'] = ($this->options['trim_spaces'] ? $this->options['trim_spaces'] : 0);
-    $this->options['smarty_mode'] = 0; // currently unimplemented  ($this->options['smarty_mode'] ? $this->options['smarty_mode'] : 1);
+    $this->options['smarty_mode'] = ($this->options['smarty_mode'] ? $this->options['smarty_mode'] : 1);
     $this->options['preserve_spaces'] = ($this->options['preserve_spaces'] ? $this->options['preserve_spaaces'] : 0);
     $this->options['head_offset'] = ($this->options['head_offset'] ? $this->options['head_offset'] : 0);
 
@@ -3225,7 +3225,7 @@ class Textile {
      * use to determine newer/older versions for upgrade and
      * installation purposes.
      */
-    return array("text" => "2.0.1", "build" => 2004052500);
+    return array("text" => "2.0.2", "build" => 2004052800);
   } // function version
 
 /**
@@ -3285,6 +3285,114 @@ class Textile {
    return $current[0];
  } // function _current
 } // class Textile
+
+/**
+ * Brad Choate's mttextile Movable Type plugin adds some additional
+ * functionality to the Textile.pm Perl module. This includes optional
+ * "SmartyPants" processing of text to produce smart quotes, dashes,
+ * etc., code colorizing using Beautifier, and some special lookup
+ * links (imdb, google, dict, and amazon). The @c MTLikeTextile class
+ * is a subclass of @c Textile that provides an MT-like implementation
+ * of Textile to produce results similar to that of the mttextile
+ * plugin. Currently only the SmartyPants and special lookup links are
+ * implemented.
+ *
+ * Using the @c MTLikeTextile class is exactly the same as using @c
+ * Textile. Simply use <code>$textile = new MTLikeTextile;</code>
+ * instead of <code>$textile = new Textile;</code> to create a Textile
+ * object.  This will enable the special lookup links.  To enable
+ * SmartyPants processing, you must install the SmartyPants-PHP
+ * implementation available at
+ * <a
+ * href="http://monauraljerk.org/smartypants-php/">http://monauraljerk.org/smartypants-php/</a>
+ * and include the
+ * SmartyPants-PHP.inc file.
+ *
+ * <pre><code>
+ * include_once("Textile.php");
+ * include_once("SmartyPants-PHP.inc");
+ * $text = \<\<\<EOT
+ * h1. Heading
+ *
+ * A _simple_ demonstration of Textile markup.
+ *
+ * * One
+ * * Two
+ * * Three
+ *
+ * "More information":http://www.textism.com/tools/textile is available.
+ * EOT;
+ *
+ * $textile = new MTLikeTextile;
+ * $html = $textile->process($text);
+ * print $html;
+ * </code></pre>
+ *
+ * @brief A Textile implementation providing additional
+ *        Movable-Type-like formatting to produce results similar to
+ *        the mttextile plugin.
+ *
+ * @author Jim Riggs \<textile at jimandlisa dot com\>
+ */
+class MTLikeTextile extends Textile {
+  /**
+   * Instantiates a new MTLikeTextile object. Optional options
+   * can be passed to initialize the object. Attributes for the
+   * options key are the same as the get/set method names
+   * documented here.
+   *
+   * @param $options The @c array specifying the options to use for
+   *        this object.
+   *
+   * @public
+   */
+  function MTLikeTextile($options = array()) {
+    parent::Textile($options);
+  } // function MTLikeTextile
+
+  /**
+   * @private
+   */
+  function process_quotes($str) {
+    if (!$this->options['do_quotes'] || !function_exists('SmartyPants')) {
+      return $str;
+    }
+
+    return SmartyPants($str, $this->options['smarty_mode']);
+  } // function process_quotes
+
+  /**
+   * @private
+   */
+  function format_url($args) {
+    $url = ($args['url'] ? $args['url'] : '');
+
+    if (preg_match('/^(imdb|google|dict|amazon)(:(.+))?$/x', $url, $matches)) {
+      $term = $matches[3];
+      $term = ($term ? $term : strip_tags($args['linktext']));
+
+      switch ($matches[1]) {
+        case 'imdb':
+          $args['url'] = 'http://www.imdb.com/Find?for=' . $term;
+          break;
+
+        case 'google':
+          $args['url'] = 'http://www.google.com/search?q=' . $term;
+          break;
+
+        case 'dict':
+          $args['url'] = 'http://www.dictionary.com/search?q=' . $term;
+          break;
+
+        case 'amazon':
+          $args['url'] = 'http://www.amazon.com/exec/obidos/external-search?index=blended&keyword=' . $term;
+          break;
+      }
+    }
+
+    return parent::format_url($args);
+  } // function format_url
+} // class MTLikeTextile
 
 /**
  * @mainpage
