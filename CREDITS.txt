@@ -1,5 +1,5 @@
 textile.module
-CREDITS
+CREDITS.txt
 $Id$
 
 Written by

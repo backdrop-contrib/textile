@@ -1,5 +1,5 @@
 textile.module
-CHANGELOG
+CHANGELOG.txt
 $Id$
 
 2004-09-23

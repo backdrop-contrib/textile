@@ -1,5 +1,5 @@
 textile.module
-README
+README.txt
 $Id$
 
 The Textile module allows you to enter content using Textile, a
@@ -37,22 +37,22 @@ Files
       custom redistribution license from
       <http://monauraljerk.org/smartypants-php/>
 
-  - README (this file)
+  - README.txt (this file)
       general module information
 
-  - INSTALL
+  - INSTALL.txt
       installation/configuration instructions
 
-  - CREDITS
+  - CREDITS.txt
       information on those responsible for this module
 
-  - TODO
+  - TODO.txt
       feature requests and modification suggestions
 
-  - CHANGELOG
+  - CHANGELOG.txt
       change/release history for this module
 
-  - LICENSE
+  - LICENSE.txt
       the license (GNU General Public License) covering the usage,
       modification, and distribution of this software and its
       accompanying files except for SmartyPants-PHP.inc which is
