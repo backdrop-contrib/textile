@@ -785,7 +785,7 @@ function _textile_version() {
    * to determine newer/older versions for upgrade and installation
    * purposes.
    */
-  return array("text" => "1.0.1", "build" => 2003110600);
+  return array("text" => "1.0.2", "build" => 2003110900);
 } // function _textile_version
 
 /**

@@ -2,6 +2,13 @@ textile.module
 CHANGELOG
 $Id$
 
+2003-11-09
+  - release 1.0.2/2003110900
+  - Textile2.php: changed preg_replace_callback() calls to $this to
+    use array(&$this, ...) instead of array($this, ...) to ensure that
+    member variables get updated properly (fixes bug 4021 reported by
+    me)
+
 2003-11-06
   - release 1.0.1/2003110600
   - textile.module: added module description for "administer >
