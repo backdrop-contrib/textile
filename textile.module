@@ -49,6 +49,8 @@
  *     HTML pages that are well-formatted and readable.
  */
 
+ini_set("include_path", ini_get("include_path") . ":" . getcwd() . "/modules/textile");
+
 /********************************************************************
  * Drupal Hooks
  ********************************************************************/
@@ -654,6 +656,21 @@ EOT;
 } // function textile_page
 
 /**
+ * Drupal combined filter hook.
+ */
+function textile_filter($op, $text = "") {
+  switch ($op) { 
+    case "name": 
+      return "textile"; 
+    case "process": 
+      return _textile_process($text);
+    case "settings":
+      return form_select(t("Textile versions"), "textile_filters", variable_get("textile_filters", 0), array(t("Versions 1 and 2b"), t("Version 1"), t("Version 2b")), t("The Textile versions available for filtering content."));
+  }
+  return $text;
+}
+
+/**
  * Drupal hook that performs the appropriate Textile filtering on the
  * provided text. If the text is not using Textile (as indicated by
  * the presence or absence of a marker), no filtering is applied.
@@ -662,7 +679,7 @@ EOT;
  *
  * @return string The filtered text.
  */
-function textile_filter($in_text) {
+function _textile_process($in_text) {
   $the_version = _textile_get_version($in_text);
 
   if ($the_version == 1) {
@@ -681,7 +698,7 @@ function textile_filter($in_text) {
   }
 
   return $in_text;
-} // function textile_filter
+}
 
 /**
  * Drupal hook that handles node settings, node form items, and filter
@@ -696,7 +713,7 @@ function textile_filter($in_text) {
  */
 function textile_nodeapi(&$io_node, $in_op) {
   switch ($in_op) {
-    case "settings":
+    case "settings": 
       return array(t("textile") => _textile_select("", "textile_$io_node->type", variable_get("textile_$io_node->type", 0)));
 
     case "form pre":
@@ -725,15 +742,6 @@ function textile_nodeapi(&$io_node, $in_op) {
       break;
   }
 } // function textile_nodeapi
-
-/**
- * Drupal hook that returns the form items for filter settings.
- *
- * @return string The form containing module-specific filter settings.
- */
-function textile_conf_filters() {
-  return form_select(t("Textile versions"), "textile_filters", variable_get("textile_filters", 0), array(t("Versions 1 and 2b"), t("Version 1"), t("Version 2b")), t("The Textile versions available for filtering content."));
-} // function textile_conf_filters
 
 /**
  * Drupal hook that returns help text for the specified section.
