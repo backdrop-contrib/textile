@@ -68,18 +68,24 @@ require_once('modules/textile/smartypants-php/SmartyPants-PHP.inc');
  * @return A <code>string</code> containing the name, filtered text,
  *         or settings as appropriate.
  */
-function textile_filter($in_op, $in_text = '') {
-  switch ($in_op) {
-    case 'name':
-      return t('textile');
+function textile_filter($op, $delta = 0, $format = -1, $text = '') {
+  switch ($op) {
+    case 'list':
+      return array(0 => t("Textile"));
+    case 'description':
+      return t('A humane web text generator.');
 
     case 'process':
-      return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process', $in_text);
+      return _textile_process($text);
 
     default:
-      return $in_text;
+      return $text;
   }
 } // function textile_filter
+
+function textile_filter_tips($delta, $format, $long = false) {
+  return textile_help($long ? 'filter#long-tip' : 'filter#short-tip');
+}
 
 /**
  * Drupal hook that returns help text for the specified section.
@@ -91,7 +97,7 @@ function textile_filter($in_op, $in_text = '') {
  */
 function textile_help($in_section = 'admin/help#textile') {
   switch ($in_section) {
-    case 'admin/system/modules#description':
+    case 'admin/modules#description':
       $the_output = 'Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.';
       break;
 
@@ -479,14 +485,14 @@ function _textile_install() {
  *
  * @private
  */
-function _textile_process($in_matches) {
+function _textile_process($text) {
   static $s_textile = NULL;
 
   if ($s_textile === NULL) {
     $s_textile = new DrupalTextile(array('smarty_mode' => DEFAULT_OPERATION_MODE));
   }
 
-  return $s_textile->process($in_matches[1]);
+  return $s_textile->process($text);
 } // function _textile_process
 
 /**

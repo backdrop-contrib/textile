@@ -2,6 +2,9 @@ textile.module
 CHANGELOG
 $Id$
 
+2004-08-11
+- update for new filter system
+
 2004-07-28
 - release 2.0.4/2004072800
 - textilephp: import of TextilePHP 2.0.4 which is (non-strict)
