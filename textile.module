@@ -54,22 +54,28 @@
  ********************************************************************/
 
 /**
+ * Drupal hook that registers the Textile help page in the menu system
+ */
+function textile_link($type) {
+  if ($type == "system") {
+    menu("textile", t("Textile Help"), "textile_page", 0, 1);
+  }
+} // function textile_link
+
+/**
  * Drupal hook that displays a page with Textile syntax help.
  */
 function textile_page() {
-  print theme("header");
   
   if (!user_access("access content")) {
-    print theme("box", t("Access Denied"), message_access());
-    print theme("footer");
+    print theme("page", message_access(), t("Access Denied"));
 
     return;
   }
 
   if (intval(arg(1)) == 1) {
+    $the_title = t("Textile v1 Help");
     $the_output = <<<EOT
-<h1>Textile v1 Help</h1>
-
 <p>
   Below is help for Textile version 1. <a href="textile">Help for
   version 2</a> is also available. For more information, visit the <a
@@ -277,9 +283,8 @@ function textile_page() {
 EOT;
   }
   else {
+    $the_title = t("Textile v2b Help");
     $the_output = <<<EOT
-<h1>Textile v2b Help</h1>
-
 <p>
   Below is help for Textile version 2. <a href="textile/1">Help for
   version 1</a> is also available. For more information, visit the <a
@@ -645,8 +650,7 @@ EOT;
 EOT;
   }
 
-  print t($the_output);
-  print theme("footer");
+  print theme("page", t($the_output), $the_title);
 } // function textile_page
 
 /**
