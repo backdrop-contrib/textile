@@ -2,6 +2,18 @@ textile.module
 CHANGELOG
 $Id$
 
+2004-03-26
+  - release 1.1.0/2004032601
+  - textile.module: updated for Drupal 4.4
+
+2004-03-26
+  - release 1.0.3/2004032600
+  - textile.module
+    - added update of include path via ini_set() for Textile(1|2).php
+      includes
+    - only the first 100 characters of filtered text are checked for
+      the Textile tag
+
 2003-11-09
   - release 1.0.2/2003110900
   - Textile2.php: changed preg_replace_callback() calls to $this to

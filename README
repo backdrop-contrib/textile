@@ -6,8 +6,8 @@ The Textile module allows you to enter content using Textile, a
 simple, plain text syntax that is filtered into valid XHTML. The
 module can filter version one and version two (currently in beta)
 syntax. Additionally, Textile filtering can be enabled and disabled on
-a per-node basis. The Textile page found at
-<http://your_drupal_site/textile> provides syntax descriptions and
+a per-node basis. The filter tips found at
+<http://your_drupal_site/filter/tips> provides syntax descriptions and
 examples.
 
 More information about Textile can be found at the Textile home page
