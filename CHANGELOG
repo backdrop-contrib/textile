@@ -2,6 +2,19 @@ textile.module
 CHANGELOG
 $Id$
 
+2004-05-29
+- release 2.0.3/2004052900
+- textile.module
+  - updated quoting
+  - fixed admin help link
+  - changed heredoc strings to multiline
+  - added @private marks
+  - added DrupalTextile (MTLikeTextile subclass) which fixes footnote
+    links in Drupal context (fixes bug 8037 reported by me)
+- textilephp: import of TextilePHP 2.0.2
+- smartypants-php: import of SmartyPants-PHP 1.4.1-r2
+- Textile.php, SmartyPants-PHP.inc: removed
+
 2004-05-27
   - release 2.0.2/2004052700
   - SmartyPants-PHP.inc: added
