@@ -647,7 +647,7 @@ EOT;
 
   print t($the_output);
   theme("footer");
-} // function quotes_page
+} // function textile_page
 
 /**
  * Drupal hook that performs the appropriate Textile filtering on the
@@ -738,8 +738,12 @@ function textile_conf_filters() {
  *
  * @return string The formatted help text.
  */
-function textile_help($in_section = "admin/help#quotes") {
+function textile_help($in_section = "admin/help#textile") {
   switch ($in_section) {
+    case "admin/system/modules#description":
+      $the_output = "Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.";
+      break;
+
     case "admin/node/settings":
       $the_output = "<br />\n<b>textile:</b> The default Textile version to be used for filtering the node body and teaser.";
       break;
@@ -769,7 +773,7 @@ EOT;
  ********************************************************************/
 
 /**
- * Returns the version of this release of the quotes module.
+ * Returns the version of this release of the textile module.
  *
  * @return array An array with keys 'text' and 'build' containing the
  *         text version and build ID of this release, respectively.
@@ -781,7 +785,7 @@ function _textile_version() {
    * to determine newer/older versions for upgrade and installation
    * purposes.
    */
-  return array("text" => "1.0", "build" => 2003110400);
+  return array("text" => "1.0.1", "build" => 2003110600);
 } // function _textile_version
 
 /**
