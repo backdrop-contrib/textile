@@ -57,11 +57,11 @@
  * Drupal hook that displays a page with Textile syntax help.
  */
 function textile_page() {
-  theme("header");
+  print theme("header");
   
   if (!user_access("access content")) {
-    theme("box", t("Access Denied"), message_access());
-    theme("footer");
+    print theme("box", t("Access Denied"), message_access());
+    print theme("footer");
 
     return;
   }
@@ -646,7 +646,7 @@ EOT;
   }
 
   print t($the_output);
-  theme("footer");
+  print theme("footer");
 } // function textile_page
 
 /**
