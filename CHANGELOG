@@ -2,6 +2,11 @@ textile.module
 CHANGELOG
 $Id$
 
+2004-05-27
+  - release 2.0.2/2004052700
+  - SmartyPants-PHP.inc: added
+  - INSTALL, README, CREDITS, textile.module: updated for SmartyPants
+
 2004-05-25
   - release 2.0.1/2004052500
   - INSTALL, README: added note about title.module

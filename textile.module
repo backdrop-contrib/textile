@@ -51,6 +51,7 @@
 _textile_install();
 
 require_once("modules/textile/Textile.php");
+require_once("modules/textile/SmartyPants-PHP.inc");
 
 /********************************************************************
  * Drupal Hooks
@@ -408,7 +409,7 @@ function _textile_version() {
    * to determine newer/older versions for upgrade and installation
    * purposes.
    */
-  return array("text" => "2.0.1", "build" => 2004052500);
+  return array("text" => "2.0.2", "build" => 2004052700);
 } // function _textile_version
 
 /**
@@ -479,6 +480,6 @@ function _textile_process($in_matches) {
     $s_textile = new Textile();
   }
 
-  return $s_textile->process($in_matches[1]);
+  return SmartyPants($s_textile->process($in_matches[1]));
 } // function _textile_process
 ?>

@@ -25,9 +25,16 @@ Files
   - Textile.php
       a PHP port of Brad Choate's (<brad at bradchoate dot com>)
       Textile.pm (<http://bradchoate.com/mt-plugins/textile>) Perl
-      module (PHP source code); this file is available separately
-      under the GNU GPL from
+      module ported by Jim Riggs (PHP source code); this file is
+      available separately under the GNU GPL from
       <http://jimandlissa.com/project/textilephp>
+
+  - SmartyPants-PHP.inc
+      a PHP port of John Gruber's (<http://daringfireball.net/>) Perl
+      SmartyPants.pl Movable Type plugin ported by Matthew McGlynn
+      (PHP source code); this file is available separately under a
+      custom redistribution license from
+      <http://monauraljerk.org/smartypants-php/>
 
   - README (this file)
       general module information
@@ -47,4 +54,5 @@ Files
   - LICENSE
       the license (GNU General Public License) covering the usage,
       modification, and distribution of this software and its
-      accompanying files
+      accompanying files except for SmartyPants-PHP.inc which is
+      covered under a custom redistribution license

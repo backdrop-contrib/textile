@@ -3,4 +3,16 @@ CREDITS
 $Id$
 
 Written by
-  - Jim Riggs <drupal at jim and lissa dot com>
+  - Jim Riggs <drupal at jimandlissa dot com>
+
+Textile.pm written by
+  - Brad Choate <brad at bradchoate dot com>
+
+Textile.php ported by
+  - Jim Riggs <textile @ jimandlissa dot com>
+
+SmartyPants.pl written by
+  - John Gruber <http://daringfireball.net/>
+
+SmartyPants-PHP.inc ported by
+  - Matthew McGlynn <http://debris.com/>
