@@ -187,18 +187,18 @@ class Textile {
     $this->options = $options;
     $this->options['filters'] = ($this->options['filters'] ? $this->options['filters'] : array());
     $this->options['charset'] = ($this->options['charset'] ? $this->options['charset'] : 'iso-8859-1');
-    $this->options['char_encoding'] = ($this->options['char_encoding'] ? $this->options['char_encoding'] : 1);
-    $this->options['do_quotes'] = ($this->options['do_quotes'] ? $this->options['do_quotes'] : 1);
-    $this->options['trim_spaces'] = ($this->options['trim_spaces'] ? $this->options['trim_spaces'] : 0);
-    $this->options['smarty_mode'] = ($this->options['smarty_mode'] ? $this->options['smarty_mode'] : 1);
-    $this->options['preserve_spaces'] = ($this->options['preserve_spaces'] ? $this->options['preserve_spaaces'] : 0);
-    $this->options['head_offset'] = ($this->options['head_offset'] ? $this->options['head_offset'] : 0);
+    $this->options['char_encoding'] = (isset($this->options['char_encoding']) ? $this->options['char_encoding'] : 1);
+    $this->options['do_quotes'] = (isset($this->options['do_quotes']) ? $this->options['do_quotes'] : 1);
+    $this->options['trim_spaces'] = (isset($this->options['trim_spaces']) ? $this->options['trim_spaces'] : 0);
+    $this->options['smarty_mode'] = (isset($this->options['smarty_mode']) ? $this->options['smarty_mode'] : 1);
+    $this->options['preserve_spaces'] = (iset($this->options['preserve_spaces']) ? $this->options['preserve_spaaces'] : 0);
+    $this->options['head_offset'] = (isset($this->options['head_offset']) ? $this->options['head_offset'] : 0);
 
     if (is_array($this->options['css'])) {
       $this->css($this->options['css']);
     }
     $this->options['macros'] = ($this->options['macros'] ? $this->options['macros'] : $this->default_macros());
-    if ($this->options['flavor']) {
+    if (isset($this->options['flavor'])) {
       $this->flavor($this->options['flavor']);
     } else {
       $this->flavor('xhtml1/css');
@@ -335,7 +335,7 @@ class Textile {
         $this->options['_blockcode_close'] = '</code></pre>';
         $this->options['css_mode'] = preg_match('/\/css/', $flavor);
       }
-      if ($this->options['css_mode'] && !$this->options['css']) { $this->_css_defaults(); }
+      if ($this->options['css_mode'] && !isset($this->options['css'])) { $this->_css_defaults(); }
     }
     return $this->options['flavor'];
   } // function flavor
@@ -408,7 +408,7 @@ class Textile {
         $this->options['css_mode'] = 1;
       } else {
         $this->options['css_mode'] = $css;
-        if ($this->options['css_mode'] && !$this->options['css']) { $this->_css_defaults(); }
+        if ($this->options['css_mode'] && !isset($this->options['css'])) { $this->_css_defaults(); }
       }
     }
     return ($this->options['css_mode'] ? $this->options['css'] : 0);
@@ -1200,7 +1200,7 @@ class Textile {
    * @private
    */
   function format_paragraph($args) {
-    $buffer = ($args['text'] ? $args['text'] : '');
+    $buffer = (isset($args['text']) ? $args['text'] : '');
 
     array_unshift($this->repl, array());
     $buffer = preg_replace_callback('{(?:^|(?<=[\s>])|([{[]))
@@ -1306,7 +1306,7 @@ class Textile {
                    array('++', 'big',    '(?<!\+)\+\+(?!\+)', '\+\+'),
                    array('--', 'small',  '(?<!\-)\-\-(?!\-)', '\-\-'),
                    array('~',  'sub',    '(?<!\~)\~(?![\\\\/~])', '\~'));
-    $text = ($args['text'] ? $args['text'] : '');
+    $text = (isset($args['text']) ? $args['text'] : '');
 
     array_unshift($this->repl, array());
 
@@ -1568,10 +1568,10 @@ class Textile {
    * @private
    */
   function format_cite($args) {
-    $pre = ($args['pre'] ? $args['pre'] : '');
-    $text = ($args['text'] ? $args['text'] : '');
+    $pre = (isset($args['pre']) ? $args['pre'] : '');
+    $text = (isset($args['text']) ? $args['text'] : '');
     $cite = $args['cite'];
-    $post = ($args['post'] ? $args['post'] : '');
+    $post = (isset($args['post']) ? $args['post'] : '');
     $this->_strip_borders($pre, $post);
     $tag = $pre . '<cite';
     if (preg_match('/^xhtml2/', $this->flavor()) && $cite) {
@@ -1608,7 +1608,7 @@ class Textile {
    * @private
    */
   function format_code($args) {
-    $code = ($args['text'] ? $args['text'] : '');
+    $code = (isset($args['text']) ? $args['text'] : '');
     $lang = $args['lang'];
     $code = $this->encode_html($code, 1);
     $code = preg_replace('/&lt;textile#(\d+)&gt;/', '<textile#$1>', $code);
@@ -1748,10 +1748,10 @@ class Textile {
    */
   function format_tag($args) {
     $tagname = $args['tag'];
-    $text = ($args['text'] ? $args['text'] : '');
-    $pre = ($args['pre'] ? $args['pre'] : '');
-    $post = ($args['post'] ? $args['post'] : '');
-    $clsty = ($args['clsty'] ? $args['clsty'] : '');
+    $text = (isset($args['text']) ? $args['text'] : '');
+    $pre = (isset($args['pre']) ? $args['pre'] : '');
+    $post = (isset($args['post']) ? $args['post'] : '');
+    $clsty = (isset($args['clsty']) ? $args['clsty'] : '');
     $this->_strip_borders($pre, $post);
     $tag = "<$tagname";
     $attr = $this->format_classstyle($clsty);
@@ -1780,7 +1780,7 @@ class Textile {
    * @private
    */
   function format_deflist($args) {
-    $str = ($args['text'] ? $args['text'] : '');
+    $str = (isset($args['text']) ? $args['text'] : '');
     unset($clsty);
     $lines = preg_split('/\n/', $str);
     if (preg_match('{^(dl(' . $this->clstyre . '*?)\.\.?(?:\ +|$))}x', $lines[0], $matches)) {
@@ -1881,7 +1881,7 @@ class Textile {
    * @private
    */
   function format_list($args) {
-    $str = ($args['text'] ? $args['text'] : '');
+    $str = (isset($args['text']) ? $args['text'] : '');
 
     $list_tags = array('*' => 'ul', '#' => 'ol');
 
@@ -2001,10 +2001,10 @@ class Textile {
    * @private
    */
   function format_block($args) {
-    $str = ($args['text'] ? $args['text'] : '');
+    $str = (isset($args['text']) ? $args['text'] : '');
     $inline = $args['inline'];
-    $pre = ($args['pre'] ? $args['pre'] : '');
-    $post = ($args['post'] ? $args['post'] : '');
+    $pre = (isset($args['pre']) ? $args['pre'] : '');
+    $post = (isset($args['post']) ? $args['post'] : '');
     $this->_strip_borders($pre, $post);
     $filters = (preg_match('/^(\|(?:(?:[a-z0-9_\-]+)\|)+)/', $str, $matches) ? $matches[1] : '');
     if ($filters) {
@@ -2041,8 +2041,8 @@ class Textile {
    * @private
    */
   function format_link($args) {
-    $text = ($args['text'] ? $args['text'] : '');
-    $linktext = ($args['linktext'] ? $args['linktext'] : '');
+    $text = (isset($args['text']) ? $args['text'] : '');
+    $linktext = (isset($args['linktext']) ? $args['linktext'] : '');
     $title = $args['title'];
     $url = $args['url'];
     $clsty = $args['clsty'];
@@ -2050,7 +2050,7 @@ class Textile {
     if (!$url || ($url == '')) {
       return $text;
     }
-    if ($this->links && $this->links[$url]) {
+    if (isset($this->links) && isset($this->links[$url])) {
       $title = ($title ? $title : $this->links[$url]['title']);
       $url = $this->links[$url]['url'];
     }
@@ -2100,11 +2100,11 @@ class Textile {
    * @private
    */
   function format_span($args) {
-    $text = ($args['text'] ? $args['text'] : '');
-    $pre = ($args['pre'] ? $args['pre'] : '');
-    $post = ($args['post'] ? $args['post'] : '');
+    $text = (isset($args['text']) ? $args['text'] : '');
+    $pre = (isset($args['pre']) ? $args['pre'] : '');
+    $post = (isset($args['post']) ? $args['post'] : '');
     $align = $args['align'];
-    $cite = ($args['cite'] ? $args['cite'] : '');
+    $cite = (isset($args['cite']) ? $args['cite'] : '');
     $clsty = $args['clsty'];
     $this->_strip_borders($pre, $post);
     unset($class, $style);
@@ -2184,11 +2184,11 @@ class Textile {
    * @private
    */
   function format_image($args) {
-    $src = ($args['src'] ? $args['src'] : '');
+    $src = (isset($args['src']) ? $args['src'] : '');
     $extra = $args['extra'];
     $align = $args['align'];
-    $pre = ($args['pre'] ? $args['pre'] : '');
-    $post = ($args['post'] ? $args['post'] : '');
+    $pre = (isset($args['pre']) ? $args['pre'] : '');
+    $post = (isset($args['post']) ? $args['post'] : '');
     $link = $args['url'];
     $clsty = $args['clsty'];
     $this->_strip_borders($pre, $post);
@@ -2315,7 +2315,7 @@ class Textile {
    * @private
    */
   function format_table($args) {
-    $str = ($args['text'] ? $args['text'] : '');
+    $str = (isset($args['text']) ? $args['text'] : '');
 
     $lines = preg_split('/\n/', $str);
     unset($rows);
@@ -2623,7 +2623,7 @@ class Textile {
 
     $param = $this->filter_param();
     foreach ($list as $filter) {
-      if (!$filters[$filter]) { continue; }
+      if (!isset($filters[$filter])) { continue; }
       if (is_string($filters[$filter])) {
         $text = (($f = create_function('$text, $param', $filters[$filter])) ? $f($text, $param) : $text);
       }
@@ -3225,7 +3225,7 @@ class Textile {
      * use to determine newer/older versions for upgrade and
      * installation purposes.
      */
-    return array("text" => "2.0.7", "build" => 2004092301);
+    return array("text" => "2.0.8", "build" => 2005032100);
   } // function version
 
 /**
