@@ -2,6 +2,22 @@ TextilePHP
 CHANGELOG
 @(#) $Id$
 
+2004-09-23
+  - release 2.0.7/2004092301
+  - Textile.php: additional rowspan correction (fixes bug 115 reported
+    by Brad Choate)
+
+2004-09-23
+  - release 2.0.6/2004092300
+  - Textile.php: fixed preg_replace() calls that erroneously handled
+    replacement text with dollar signs (fixes bug 118 reported by
+    noeljackson)
+
+2004-09-03
+  - release 2.0.5/2004090300
+  - Textile.php: rowspan correction (fixes bug 115 reported by Brad
+    Choate)
+
 2004-07-28
   - release 2.0.4/2004072800
   - Textile.php: updated for (non-strict) PHP5-compliance

@@ -1166,7 +1166,7 @@ class Textile {
 
     // cleanup-- restore preserved blocks
     for ($i = count($this->repl[0]); $i > 0; $i--) {
-      $out = preg_replace('!(?:<|&lt;)textile#' . $i . '(?:>|&gt;)!', $this->repl[0][$i - 1], $out, 1);
+      $out = preg_replace('!(?:<|&lt;)textile#' . $i . '(?:>|&gt;)!', str_replace('$', '\\$', $this->repl[0][$i - 1]), $out, 1);
     }
     array_shift($this->repl);
 
@@ -1264,7 +1264,7 @@ class Textile {
     $result = preg_replace('/\001/', "\n", $result);
 
     for ($i = count($this->repl[0]); $i > 0; $i--) {
-      $result = preg_replace("|<textile#$i>|", $this->repl[0][$i - 1], $result, 1);
+      $result = preg_replace("|<textile#$i>|", str_replace('$', '\\$', $this->repl[0][$i - 1]), $result, 1);
     }
     array_shift($this->repl);
 
@@ -1480,7 +1480,7 @@ class Textile {
 
     // Restore replacements done earlier:
     for ($i = count($this->repl[0]); $i > 0; $i--) {
-      $text = preg_replace("|<textile#$i>|", $this->repl[0][$i - 1], $text);
+      $text = preg_replace("|<textile#$i>|", str_replace('$', '\\$', $this->repl[0][$i - 1]), $text);
     }
     array_shift($this->repl);
 
@@ -2496,7 +2496,7 @@ class Textile {
         $col = preg_replace('/^ +/', '', $col, 1); $col = preg_replace('/ +$/', '', $col, 1);
         if (strlen($col)) {
           // create one cell tag
-          $rowspan = $rowspans[$c] || 0;
+          $rowspan = ($rowspans[$c] ? $rowspans[$c] : 0);
           $col_out = '<' . ($header ? 'th' : 'td');
           if ($colalign) {
             // horizontal, vertical alignment
@@ -2514,7 +2514,7 @@ class Textile {
           if ($colstyle) { $col_out .= " style=\"$colstyle\""; }
           if ($collang) { $col_out .= " lang=\"$collang\""; }
           if ($colspan > 1) { $col_out .= " colspan=\"$colspan\""; }
-          if (($rospan || 0) > 1) { $col_out .= " rowspan=\"$rowspan\""; }
+          if ($rowspan > 1) { $col_out .= " rowspan=\"$rowspan\""; }
           $col_out .= '>';
           // if the content of this cell has newlines OR matches
           // our paragraph block signature, process it as a full-blown
@@ -3225,7 +3225,7 @@ class Textile {
      * use to determine newer/older versions for upgrade and
      * installation purposes.
      */
-    return array("text" => "2.0.4", "build" => 2004072800);
+    return array("text" => "2.0.7", "build" => 2004092301);
   } // function version
 
 /**
