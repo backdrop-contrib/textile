@@ -49,252 +49,133 @@
  *     HTML pages that are well-formatted and readable.
  */
 
-ini_set("include_path", ini_get("include_path") . ":" . getcwd() . "/modules/textile");
+/* Setup - set the include path to include the current directory to
+ * include the TextileX.php files.
+ */
+ini_set("include_path", ini_get("include_path") . ":" . getcwd() . "/modules/textile/");
 
 /********************************************************************
  * Drupal Hooks
  ********************************************************************/
 
 /**
- * Drupal hook that registers the Textile help page in the menu system
+ * Drupal hook that performs all filter-related handling.
+ *
+ * @param $in_op string The operation being performed.
+ * @param $in_text string The text being filtered.
+ *
+ * @return string The name, filtered text, or settings as
+ *         appropriate.
  */
-function textile_link($type) {
-  if ($type == "system") {
-    menu("textile", t("Textile Help"), "textile_page", 0, 1);
+function textile_filter($in_op, $in_text = "") {
+  switch ($in_op) {
+    case "name":
+      return t("textile");
+
+    case "process":
+      return _textile_process($in_text);
+
+    case "settings":
+      return form_group("Textile filtering", form_select(t("Textile versions"), "textile_filters", variable_get("textile_filters", 0), array(t("Versions 1 and 2b"), t("Version 1"), t("Version 2b")), t("The Textile versions available for filtering content.")));
+
+    default:
+      return $in_text;
   }
-} // function textile_link
+} // function textile_filter
 
 /**
- * Drupal hook that displays a page with Textile syntax help.
+ * Drupal hook that handles node settings, node form items, and filter
+ * marker insertion for the provided node.
+ *
+ * @param object $io_node The node on which the operation is being
+ *        performed.
+ * @param string $in_op The operation being performed.
+ *
+ * @return mixed An array of node settings or form items, as
+ *         appropriate.
  */
-function textile_page() {
-  
-  if (!user_access("access content")) {
-    print theme("page", message_access(), t("Access Denied"));
+function textile_nodeapi(&$io_node, $in_op) {
+  switch ($in_op) {
+    case "settings":
+      return array(t("textile") => _textile_select("", "textile_$io_node->type", variable_get("textile_$io_node->type", 0), "", true));
 
-    return;
+    case "form pre":
+      // get textile settings for this node
+      $the_version = _textile_get_version($io_node->body);
+
+      // remove comment from teaser
+      _textile_get_version($io_node->teaser);
+
+      if (!$io_node->textile_version) {
+        $io_node->textile_version = ($the_version ? $the_version : variable_get("textile_$io_node->type", 0));
+      }
+
+      return _textile_select("<a name=\"textile_input\">" . t("Textile input") . "</a>", "textile_version", $io_node->textile_version, t("Select the Textile version to be used for filtering the <b>body</b> and <b>teaser</b> text for this node."));
+
+    case "validate":
+      // insert the filter marker
+      if ($io_node->textile_version && !$io_node->textile_commented) {
+        $io_node->body =
+          "\001textile$io_node->textile_version\001\n" . $io_node->body;
+        $io_node->teaser =
+          "\001textile$io_node->textile_version\001\n" . $io_node->teaser;
+        $io_node->textile_commented = true;
+      }
+      
+      break;
   }
+} // function textile_nodeapi
 
-  if (intval(arg(1)) == 1) {
-    $the_title = t("Textile v1 Help");
-    $the_output = <<<EOT
+/**
+ * Drupal hook that returns help text for the specified section.
+ *
+ * @param string $in_section The section for which help is requested.
+ *
+ * @return string The formatted help text.
+ */
+function textile_help($in_section = "admin/help#textile") {
+  switch ($in_section) {
+    case "admin/system/modules#description":
+      $the_output = "Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.";
+      break;
+
+    case "admin/node/settings":
+      $the_output = "<br />\n<b>textile:</b> The default Textile version to be used for filtering the node body and teaser.";
+      break;
+
+    case "admin/help#textile":
+      $the_link = url("filter/tips", NULL, "textile2");
+      $the_output = <<<EOT
 <p>
-  Below is help for Textile version 1. <a href="textile">Help for
-  version 2</a> is also available. For more information, visit the <a
-  href="http://textism.com/tools/textile/" title="Textile">Textile
-  home page</a>.
+  The Textile module allows you to enter content using <a
+  href="http://textism.com/tools/textile/"
+  title="Textile">Textile</a>, a simple, plain text syntax that is
+  filtered into valid XHTML. The module can filter version one and
+  version two (currently in beta) syntax. Additionally, Textile
+  filtering can be enabled and disabled on a per-node basis. The <a
+  href="$the_link" title="Textile help">filter tips page</a> provides
+  syntax descriptions and examples.
 </p>
 
-<hr>
-
-<h2>Block modifier syntax:</h2>
-<table>
-<tr>
-  <th>textile input</th>
-  <th>HTML output</th>
-  <th>example output</th>
-</tr>
-<tr class="dark">
-  <td colspan="3">
-    <h3>Headings</h3>
-  </td>
-</tr>
-<tr class="light">
-  <td>h1. Heading</td>
-  <td>&lt;h1&gt;Heading&lt;/h1&gt;</td>
-  <td><h1>Heading</h1></td>
-</tr>
-<tr class="light">
-  <td>h2(class). Heading with class</td>
-  <td>&lt;h2 class="class"&gt;Heading with class&lt;/h2&gt;</td>
-  <td><h2 class="class">Heading with class</h2></td>
-</tr>
-
-<tr class="dark">
-  <td colspan="3"><h3>Paragraphs</h3></td>
-</tr>
-<tr class="light">
-  <td>p. Text</td>
-  <td>&lt;p&gt;Text&lt;/p&gt;</td>
-  <td><p>Text</p></td>
-</tr>
-<tr class="light">
-  <td>p(class). Text</td>
-  <td>&lt;p class="class"&gt;Text&lt;/p&gt;</td>
-  <td><p class="class">Text</p>
-</tr>
-
-<tr class="dark">
-  <td colspan="3"><h3>Block quotes</h3></td>
-</tr>
-<tr class="light">
-  <td>bq. Block quote</td>
-  <td>&lt;blockquote&gt;Block quote&lt;/blockquote&gt;</td>
-  <td><blockquote>Block quote</blockquote></td>
-</tr>
-<tr class="light">
-  <td>bq(url). Quote with citation</td>
-  <td>
-    &lt;blockquote cite="url"&gt;Quote with
-    citation&lt;/blockquote&gt;
-  </td>
-  <td><blockquote cite="url">Quote with citation</blockquote></td>
-</tr>
-
-<tr class="dark">
-  <td colspan="3"><h3>Ordered lists</h3></td>
-</tr>
-<tr class="light">
-  <td>
-    # Item 1<br />
-    # Item 2
-  </td>
-  <td>
-    &lt;ol&gt;<br />
-    &nbsp;&lt;li&gt;Item 1&lt;/li&gt;<br />
-    &nbsp;&lt;li&gt;Item 2&lt;/li&gt;<br />
-    &lt;/ol&gt;
-  </td>
-  <td>
-    <ol>
-      <li>Item 1</li>
-      <li>Item 2</li>
-    </ol>
-  </td>
-</tr>
-
-<tr class="dark">
-  <td colspan="3"><h3>Unordered lists</h3></td>
-</tr>
-<tr class="light">
-  <td>
-    * Item 1<br />
-    * Item 2
-  </td>
-  <td>
-    &lt;ul&gt;<br />
-    &nbsp;&lt;li&gt;Item 1&lt;/li&gt;<br />
-    &nbsp;&lt;li&gt;Item 2&lt;/li&gt;<br />
-    &lt;/ul&gt;
-  </td>
-  <td>
-    <ul>
-      <li>Item 1</li>
-      <li>Item 2</li>
-    </ul>
-  </td>
-</tr>
-</table>
-
-<hr>
-
-<h2>Phrase modifier syntax:</h2>
-<table>
-<tr>
-  <th>textile input</th>
-  <th>HTML output</th>
-  <th>example output</th>
-</tr>
-<tr class="dark">
-  <td>_emphasis_</td>
-  <td>&lt;em&gt;emphasis&lt;/em&gt;</td>
-  <td><em>emphasis</em></td>
-</tr>
-<tr class="light">
-  <td>__italic__</td>
-  <td>&lt;i&gt;italic&lt;/i&gt;</td>
-  <td><i>italic</i></td>
-</tr>
-<tr class="dark">
-  <td>*strong*</td>
-  <td>&lt;strong&gt;strong&lt;/strong&gt;</td>
-  <td><strong>strong</strong></td>
-</tr>
-<tr class="light">
-  <td>**bold**</td>
-  <td>&lt;b&gt;bold&lt;/b&gt;</td>
-  <td><b>bold</b></td>
-</tr>
-<tr class="dark">
-  <td>??citation??</td>
-  <td>&lt;cite&gt;citation&lt;/cite&gt;</td>
-  <td><cite>citation</cite></td>
-</tr>
-<tr class="light">
-  <td>-delete text-</td>
-  <td>&lt;del&gt;deleted text&lt;/del&gt;</td>
-  <td><del>deleted text</del></td>
-</tr>
-<tr class="dark">
-  <td>+inserted text+</td>
-  <td>&lt;ins&gt;inserted text&lt;/ins&gt;</td>
-  <td><ins>inserted text</ins></td>
-</tr>
-<tr class="light">
-  <td>^superscript^</td>
-  <td>&lt;sup&gt;superscript&lt;/sup&gt;</td>
-  <td><sup>superscript</sup></td>
-</tr>
-<tr class="dark">
-  <td>~subscript~</td>
-  <td>&lt;sub&gt;subscript&lt;/sub&gt;</td>
-  <td><sub>subscript</sub></td>
-</tr>
-<tr class="light">
-  <td>@code@</td>
-  <td>&lt;code&gt;code&lt;/code&gt;</td>
-  <td><code>code</code></td>
-</tr>
-<tr class="dark">
-  <td>==no textile==</td>
-  <td>no textile</td>
-  <td>no textile</td>
-</tr>
-<tr class="light">
-  <td>"link text":url</td>
-  <td>&lt;a href="url"&gt;link text&lt;/a&gt;</td>
-  <td><a href="url">link text</a></td>
-</tr>
-<tr class="dark">
-  <td>"link text(title)":url</td>
-  <td>&lt;a href="url" title="title"&gt;link text&lt;/a&gt;</td>
-  <td><a href="url" title="title">link text</a></td>
-</tr>
-<tr class="light">
-  <td>!imageurl!</td>
-  <td>&lt;img src="imageurl" /&gt;</td>
-  <td><img src="imageurl" /></td>
-</tr>
-<tr class="dark">
-  <td>!imageurl(alt text)!</td>
-  <td>&lt;img src="imageurl" alt="alt text" /&gt;</td>
-  <td><img src="imageurl" alt="alt text" /></td>
-</tr>
-<tr class="light">
-  <td>!imageurl!:url</td>
-  <td>&lt;a href="url"&gt;&lt;img src="imageurl" /&gt;&lt;/a&gt;</td>
-  <td><a href="imageurl"><img src="imageurl" /></a></td>
-</tr>
-<tr class="dark">
-  <td>ABC(Always Be Closing)</td>
-  <td>&lt;acronym title="Always Be Closing"&gt;ABC&lt;/acronym&gt;</td>
-  <td><acronym title="Always Be Closing">ABC</acronym></td>
-</tr>
-</table>
-
 EOT;
-  }
-  else {
-    $the_title = t("Textile v2b Help");
-    $the_output = <<<EOT
+      break;
+
+    case "filter#short-tip":
+      $the_output = "If enabled, you can use Textile to format and style the text.";
+
+      break;
+
+    case "filter#long-tip":
+      $the_link = url(request_uri());
+      $the_output = <<<EOT
+<h1><a name="textile2">Textile v2b Help</a></h1>
+
 <p>
-  Below is help for Textile version 2. <a href="textile/1">Help for
+  Below is help for Textile version 2. <a href="$the_link#textile1">Help for
   version 1</a> is also available. For more information, visit the <a
   href="http://textism.com/tools/textile/" title="Textile">Textile
   home page</a>.
 </p>
-
-<hr>
 
 <h2>Block modifier syntax:</h2>
 <p>
@@ -530,8 +411,6 @@ EOT;
 </tr>
 </table>
 
-<hr>
-
 <h2>Phrase modifier syntax:</h2>
 <p>
   The class, ID, style, and language attributes described above also
@@ -649,131 +528,215 @@ EOT;
 </tr>
 </table>
 
-EOT;
-  }
+<hr />
 
-  print theme("page", t($the_output), $the_title);
-} // function textile_page
+<h1><a name="textile1">Textile v1 Help</a></h1>
 
-/**
- * Drupal combined filter hook.
- */
-function textile_filter($op, $text = "") {
-  switch ($op) { 
-    case "name": 
-      return "textile"; 
-    case "process": 
-      return _textile_process($text);
-    case "settings":
-      return form_select(t("Textile versions"), "textile_filters", variable_get("textile_filters", 0), array(t("Versions 1 and 2b"), t("Version 1"), t("Version 2b")), t("The Textile versions available for filtering content."));
-  }
-  return $text;
-}
-
-/**
- * Drupal hook that performs the appropriate Textile filtering on the
- * provided text. If the text is not using Textile (as indicated by
- * the presence or absence of a marker), no filtering is applied.
- *
- * @param $in_text string The text to be filtered.
- *
- * @return string The filtered text.
- */
-function _textile_process($in_text) {
-  $the_version = _textile_get_version($in_text);
-
-  if ($the_version == 1) {
-    require_once("Textile1.php");
-
-    $the_textile = new Textile1;
-
-    return $the_textile->textile($in_text);
-  }
-  elseif ($the_version == 2) {
-    require_once("Textile2.php");
-
-    $the_textile = new Textile2;
-
-    return $the_textile->textile($in_text);
-  }
-
-  return $in_text;
-}
-
-/**
- * Drupal hook that handles node settings, node form items, and filter
- * marker insertion for the provided node.
- *
- * @param object $io_node The node on which the operation is being
- *        performed.
- * @param string $in_op The operation being performed.
- *
- * @return mixed An array of node settings or form items, as
- *         appropriate.
- */
-function textile_nodeapi(&$io_node, $in_op) {
-  switch ($in_op) {
-    case "settings": 
-      return array(t("textile") => _textile_select("", "textile_$io_node->type", variable_get("textile_$io_node->type", 0)));
-
-    case "form pre":
-      // get textile settings for this node
-      $the_version = _textile_get_version($io_node->body);
-
-      // remove comment from teaser
-      _textile_get_version($io_node->teaser);
-
-      if (!$io_node->textile_version) {
-        $io_node->textile_version = ($the_version ? $the_version : variable_get("textile_$io_node->type", 0));
-      }
-
-      return _textile_select(t("Textile input"), "textile_version", $io_node->textile_version, t("Select the Textile version to be used for filtering the <b>body</b> and <b>teaser</b> text for this node. [") . l(t("help/examples"), "textile", array("title" => t("Textile help"), "target" => "_blank")) . "]");
-
-    case "validate":
-      // insert the filter marker
-      if ($io_node->textile_version && !$io_node->textile_commented) {
-        $io_node->body =
-          "\001textile$io_node->textile_version\001\n" . $io_node->body;
-        $io_node->teaser =
-          "\001textile$io_node->textile_version\001\n" . $io_node->teaser;
-        $io_node->textile_commented = true;
-      }
-      
-      break;
-  }
-} // function textile_nodeapi
-
-/**
- * Drupal hook that returns help text for the specified section.
- *
- * @param string $in_section The section for which help is requested.
- *
- * @return string The formatted help text.
- */
-function textile_help($in_section = "admin/help#textile") {
-  switch ($in_section) {
-    case "admin/system/modules#description":
-      $the_output = "Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.";
-      break;
-
-    case "admin/node/settings":
-      $the_output = "<br />\n<b>textile:</b> The default Textile version to be used for filtering the node body and teaser.";
-      break;
-
-    case "admin/help#textile":
-      $the_output = <<<EOT
 <p>
-  The Textile module allows you to enter content using <a
-  href="http://textism.com/tools/textile/"
-  title="Textile">Textile</a>, a simple, plain text syntax that is
-  filtered into valid XHTML. The module can filter version one and
-  version two (currently in beta) syntax. Additionally, Textile
-  filtering can be enabled and disabled on a per-node basis. The <a
-  href="textile" title="Textile help">Textile page</a> provides syntax
-  descriptions and examples.
+  Below is help for Textile version 1. <a href="$the_link#textile2">Help for
+  version 2</a> is also available. For more information, visit the <a
+  href="http://textism.com/tools/textile/" title="Textile">Textile
+  home page</a>.
 </p>
 
+<h2>Block modifier syntax:</h2>
+<table>
+<tr>
+  <th>textile input</th>
+  <th>HTML output</th>
+  <th>example output</th>
+</tr>
+
+<tr class="dark">
+  <td colspan="3">
+    <h3>Headings</h3>
+  </td>
+</tr>
+<tr class="light">
+  <td>h1. Heading</td>
+  <td>&lt;h1&gt;Heading&lt;/h1&gt;</td>
+  <td><h1>Heading</h1></td>
+</tr>
+<tr class="light">
+  <td>h2(class). Heading with class</td>
+  <td>&lt;h2 class="class"&gt;Heading with class&lt;/h2&gt;</td>
+  <td><h2 class="class">Heading with class</h2></td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Paragraphs</h3></td>
+</tr>
+<tr class="light">
+  <td>p. Text</td>
+  <td>&lt;p&gt;Text&lt;/p&gt;</td>
+  <td><p>Text</p></td>
+</tr>
+<tr class="light">
+  <td>p(class). Text</td>
+  <td>&lt;p class="class"&gt;Text&lt;/p&gt;</td>
+  <td><p class="class">Text</p>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Block quotes</h3></td>
+</tr>
+<tr class="light">
+  <td>bq. Block quote</td>
+  <td>&lt;blockquote&gt;Block quote&lt;/blockquote&gt;</td>
+  <td><blockquote>Block quote</blockquote></td>
+</tr>
+<tr class="light">
+  <td>bq(url). Quote with citation</td>
+  <td>
+    &lt;blockquote cite="url"&gt;Quote with
+    citation&lt;/blockquote&gt;
+  </td>
+  <td><blockquote cite="url">Quote with citation</blockquote></td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Ordered lists</h3></td>
+</tr>
+<tr class="light">
+  <td>
+    # Item 1<br />
+    # Item 2
+  </td>
+  <td>
+    &lt;ol&gt;<br />
+    &nbsp;&lt;li&gt;Item 1&lt;/li&gt;<br />
+    &nbsp;&lt;li&gt;Item 2&lt;/li&gt;<br />
+    &lt;/ol&gt;
+  </td>
+  <td>
+    <ol>
+      <li>Item 1</li>
+      <li>Item 2</li>
+    </ol>
+  </td>
+</tr>
+
+<tr class="dark">
+  <td colspan="3"><h3>Unordered lists</h3></td>
+</tr>
+<tr class="light">
+  <td>
+    * Item 1<br />
+    * Item 2
+  </td>
+  <td>
+    &lt;ul&gt;<br />
+    &nbsp;&lt;li&gt;Item 1&lt;/li&gt;<br />
+    &nbsp;&lt;li&gt;Item 2&lt;/li&gt;<br />
+    &lt;/ul&gt;
+  </td>
+  <td>
+    <ul>
+      <li>Item 1</li>
+      <li>Item 2</li>
+    </ul>
+  </td>
+</tr>
+</table>
+
+<hr>
+
+<h2>Phrase modifier syntax:</h2>
+<table>
+<tr>
+  <th>textile input</th>
+  <th>HTML output</th>
+  <th>example output</th>
+</tr>
+<tr class="dark">
+  <td>_emphasis_</td>
+  <td>&lt;em&gt;emphasis&lt;/em&gt;</td>
+  <td><em>emphasis</em></td>
+</tr>
+<tr class="light">
+  <td>__italic__</td>
+  <td>&lt;i&gt;italic&lt;/i&gt;</td>
+  <td><i>italic</i></td>
+</tr>
+<tr class="dark">
+  <td>*strong*</td>
+  <td>&lt;strong&gt;strong&lt;/strong&gt;</td>
+  <td><strong>strong</strong></td>
+</tr>
+<tr class="light">
+  <td>**bold**</td>
+  <td>&lt;b&gt;bold&lt;/b&gt;</td>
+  <td><b>bold</b></td>
+</tr>
+<tr class="dark">
+  <td>??citation??</td>
+  <td>&lt;cite&gt;citation&lt;/cite&gt;</td>
+  <td><cite>citation</cite></td>
+</tr>
+<tr class="light">
+  <td>-delete text-</td>
+  <td>&lt;del&gt;deleted text&lt;/del&gt;</td>
+  <td><del>deleted text</del></td>
+</tr>
+<tr class="dark">
+  <td>+inserted text+</td>
+  <td>&lt;ins&gt;inserted text&lt;/ins&gt;</td>
+  <td><ins>inserted text</ins></td>
+</tr>
+<tr class="light">
+  <td>^superscript^</td>
+  <td>&lt;sup&gt;superscript&lt;/sup&gt;</td>
+  <td><sup>superscript</sup></td>
+</tr>
+<tr class="dark">
+  <td>~subscript~</td>
+  <td>&lt;sub&gt;subscript&lt;/sub&gt;</td>
+  <td><sub>subscript</sub></td>
+</tr>
+<tr class="light">
+  <td>@code@</td>
+  <td>&lt;code&gt;code&lt;/code&gt;</td>
+  <td><code>code</code></td>
+</tr>
+<tr class="dark">
+  <td>==no textile==</td>
+  <td>no textile</td>
+  <td>no textile</td>
+</tr>
+<tr class="light">
+  <td>"link text":url</td>
+  <td>&lt;a href="url"&gt;link text&lt;/a&gt;</td>
+  <td><a href="url">link text</a></td>
+</tr>
+<tr class="dark">
+  <td>"link text(title)":url</td>
+  <td>&lt;a href="url" title="title"&gt;link text&lt;/a&gt;</td>
+  <td><a href="url" title="title">link text</a></td>
+</tr>
+<tr class="light">
+  <td>!imageurl!</td>
+  <td>&lt;img src="imageurl" /&gt;</td>
+  <td><img src="imageurl" /></td>
+</tr>
+<tr class="dark">
+  <td>!imageurl(alt text)!</td>
+  <td>&lt;img src="imageurl" alt="alt text" /&gt;</td>
+  <td><img src="imageurl" alt="alt text" /></td>
+</tr>
+<tr class="light">
+  <td>!imageurl!:url</td>
+  <td>&lt;a href="url"&gt;&lt;img src="imageurl" /&gt;&lt;/a&gt;</td>
+  <td><a href="imageurl"><img src="imageurl" /></a></td>
+</tr>
+<tr class="dark">
+  <td>ABC(Always Be Closing)</td>
+  <td>&lt;acronym title="Always Be Closing"&gt;ABC&lt;/acronym&gt;</td>
+  <td><acronym title="Always Be Closing">ABC</acronym></td>
+</tr>
+</table>
+
 EOT;
+      
       break;
   }
 
@@ -797,7 +760,7 @@ function _textile_version() {
    * to determine newer/older versions for upgrade and installation
    * purposes.
    */
-  return array("text" => "1.0.2", "build" => 2003110900);
+  return array("text" => "1.1.0", "build" => 2004032601);
 } // function _textile_version
 
 /**
@@ -812,12 +775,18 @@ function _textile_version() {
 function _textile_get_version(&$io_text) {
   $the_version = 0;
 
-  if (strpos($io_text, "\001textile1\001\n") !== false) {
+  /* Only look at the beginning of the string to be faster; don't only
+   * look at position 0 in case some other module uses a similar
+   * tagging method.  100 should be a big enough prefix.
+   */
+  $the_prefix = substr($io_text, 0, 100);
+
+  if (strpos($the_prefix, "\001textile1\001\n") !== false) {
     $the_version = 1;
     $io_text = str_replace("\001textile1\001\n", "", $io_text);
   }
   
-  if (strpos($io_text, "\001textile2\001\n") !== false) {
+  if (strpos($the_prefix, "\001textile2\001\n") !== false) {
     $the_version = 2;
     $io_text = str_replace("\001textile2\001\n", "", $io_text);
   }
@@ -826,17 +795,19 @@ function _textile_get_version(&$io_text) {
 } // function _textile_get_version
 
 /**
- * Returns a "select" form item with the currently-available Textile
- * versions.
+ * Returns a radio button list form item with the currently-available
+ * Textile versions.
  *
  * @param string $in_title The title for the form item.
  * @param string $in_name The name for the form item.
  * @param integer $in_selected_ver The selected version.
  * @param string $in_help The help text for the form item.
+ * @param boolean $in_use_select The boolean that indicates whether or
+ *        not to use a select instead of radios.
  *
  * @return string The form item to be displayed.
  */
-function _textile_select($in_title, $in_name, $in_selected_ver = 0, $in_help = "") {
+function _textile_select($in_title, $in_name, $in_selected_ver = 0, $in_help = "", $in_use_select = false) {
   switch (variable_get("textile_filters", 0)) {
     case 1:
       $the_options = array(t("none"), t("Textile v1"));
@@ -852,6 +823,38 @@ function _textile_select($in_title, $in_name, $in_selected_ver = 0, $in_help = "
       break;
   }
 
-  return form_select($in_title, $in_name, $in_selected_ver, $the_options, $in_help);
+  if ($in_use_select) {
+    return form_select($in_title, $in_name, $in_selected_ver, $the_options, $in_help);
+  }
+  
+  return form_radios($in_title, $in_name, $in_selected_ver, $the_options, $in_help);
 } // function _textile_select
+
+/**
+ * Performs the appropriate Textile filtering on the provided text. If
+ * the text is not using Textile (as indicated by the presence or
+ * absence of a marker), no filtering is applied.
+ *
+ * @param $in_text string The text to be filtered.
+ *
+ * @return string The filtered text.
+ */
+function _textile_process($in_text) {
+  switch (_textile_get_version($in_text)) {
+    case 1:
+      require_once("Textile1.php");
+      $the_textile = new Textile1;
+
+      return $the_textile->textile($in_text);
+
+    case 2:
+      require_once("Textile2.php");
+      $the_textile = new Textile2;
+
+      return $the_textile->textile($in_text);
+
+    default:
+      return $in_text;
+  }
+} // function _textile_process
 ?>
