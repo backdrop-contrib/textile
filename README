@@ -4,11 +4,8 @@ $Id$
 
 The Textile module allows you to enter content using Textile, a
 simple, plain text syntax that is filtered into valid XHTML. The
-module can filter version one and version two (currently in beta)
-syntax. Additionally, Textile filtering can be enabled and disabled on
-a per-node basis. The filter tips found at
-<http://your_drupal_site/filter/tips> provides syntax descriptions and
-examples.
+filter tips found at <http://your_drupal_site/filter/tips> provides
+syntax descriptions and examples.
 
 More information about Textile can be found at the Textile home page
 <http://textism.com/tools/textile/>.
@@ -23,13 +20,12 @@ Files
   - textile.module
       the actual module (PHP source code)
 
-  - Textile1.php
-      a modified version of Dean Allen's Textile v1 source code (PHP
-      source code)
-
-  - Textile2.php
-      a modified version of Dean Allen's Textile v2b source code (PHP
-      source code)
+  - Textile.php
+      a PHP port of Brad Choate's (<brad at bradchoate dot com>)
+      Textile.pm (<http://bradchoate.com/mt-plugins/textile>) Perl
+      module (PHP source code); this file is available separately
+      under the GNU GPL from
+      <http://jimandlissa.com/project/textilephp>
 
   - README (this file)
       general module information
@@ -49,5 +45,4 @@ Files
   - LICENSE
       the license (GNU General Public License) covering the usage,
       modification, and distribution of this software and its
-      accompanying files, excluding the Textile files which are
-      covered by a separate license
+      accompanying files

@@ -3,19 +3,9 @@ INSTALL
 $Id$
 
 Installation of textile.module could not be simpler. Simply copy the
-textile directory, containing the textile.module and related PHP files
+textile directory, containing the textile.module and Textile.php files
 to your Drupal modules directory. Then log into your site and go to
-the following address (assuming you have clean URLs turned on):
-
-  http://<your_drupal_site>/admin/system/filters
-
-Here you can specify which version(s) of Textile should be available
-for creating content. Additionally, you can go to
-
-  http://<your_drupal_site>/admin/node/settings
-
-On this page you can specify the default Textile input option that
-will be used for each type of node on your site.
+the module configuration page and enable the Textile module.
 
 NOTE: Drupal's current filter implementation is not the most efficient
 and will be reworked in upcoming releases. This module should perform

@@ -2,6 +2,24 @@ textile.module
 CHANGELOG
 $Id$
 
+2004-05-24
+  - release 2.0/2004052400
+  - textile.module
+    - no longer uses "invisible" tags in the node body/teaser to
+      identify Textile input; "visible" [textile] and optional
+      [/textile] tags now mark Textile data; legacy Textile nodes are
+      updated automatically (fixes bug 7348 reported by jluster)
+    - _textile_is_installed() and _textile_install() methods
+      implemented to allow automatic legacy update
+    - nodeapi support removed, as it is unneeded with new tags
+      (nullifies bugs/features 3992, 5824, and 5195 reported by ber
+      kessels, mic, and weitzman, respectively)
+    - fixed phpdoc comments
+  - Textile1.php, Textile2.php: removed
+  - Textile.php: PHP port of Brad Choate's Textile.pm Perl module
+    available at <http://jimandlissa.com/project/textilephp> replaces
+    Textile(1|2).php (fixes bug 4439 reported by Eric Scouten)
+
 2004-03-26
   - release 1.1.0/2004032601
   - textile.module: updated for Drupal 4.4
