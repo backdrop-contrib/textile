@@ -2,6 +2,15 @@ textile.module
 CHANGELOG
 $Id$
 
+2004-09-23
+  - release 2.1.1/2004092301
+  - textilephp: import of TextilePHP 2.0.7
+  - textile.module: updated to use module_get_path()
+
+2004-09-23
+  - release 2.0.6/2004092300
+  - textilephp: import of TextilePHP 2.0.7
+
 2004-08-25
   - release 2.1.0/2004082501
   - NOTE: some of the changes in this release conflict with changes
