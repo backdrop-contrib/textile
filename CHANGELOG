@@ -2,5 +2,10 @@ textile.module
 CHANGELOG
 $Id$
 
+2003-11-06
+  - release 1.0.1/2003110600
+  - textile.module: added module description for "administer >
+    configuration > modules" list
+
 2003-11-04
   - initial release 1.0/2003110400
