@@ -305,7 +305,7 @@ class Textile2 {
     {
         $text = $text."\n\n";
         return preg_replace_callback("/^(?:table(_?$this->s$this->a$this->c)\. ?\n)?^($this->a$this->c\.? ?\|.*\|)\n\n/smU",
-            array($this, "fTable"),$text);
+            array(&$this, "fTable"),$text);
     }
 
 // -------------------------------------------------------------
@@ -340,7 +340,7 @@ class Textile2 {
 // -------------------------------------------------------------
     function lists($text) 
     {
-        return preg_replace_callback("/^([#*]+$this->c .*)$(?![^#*])/smU",array($this, "fList"),$text); 
+        return preg_replace_callback("/^([#*]+$this->c .*)$(?![^#*])/smU",array(&$this, "fList"),$text); 
     }
 
 // -------------------------------------------------------------
@@ -401,7 +401,7 @@ class Textile2 {
             foreach($find as $tag){
                 $line = ($pre==false) 
                 ?    preg_replace_callback("/^($tag)($this->a$this->c)\.(?::(\S+))? (.*)$/",
-                        array($this, "fBlock"),$line) 
+                        array(&$this, "fBlock"),$line) 
                 :    $line;
             }
             
@@ -458,7 +458,7 @@ class Textile2 {
                 ([[:punct:]]*)
                 $f
                 (?=[])}]|[[:punct:]]+|\s|$)
-            /xmU",array($this, "fSpan"),$text);
+            /xmU",array(&$this, "fSpan"),$text);
         }
         return $text;
     }
@@ -501,7 +501,7 @@ class Textile2 {
             (\/)?                      # $slash
             ([^\w\/;]*)                # $post
             (?=\s|$)
-        /Ux',array($this, "fLink"),$text);
+        /Ux',array(&$this, "fLink"),$text);
     }
 
 // -------------------------------------------------------------
@@ -514,7 +514,7 @@ class Textile2 {
         $atts = $this->pba($atts);
         $atts.= ($title!='') ? ' title="'.$title.'"' : '';
         
-        $atts = ($atts!='') ? $thie->shelve($atts) : '';
+        $atts = ($atts!='') ? $this->shelve($atts) : '';
         
         return $pre.'<a href="'.$url.$slash.'"'.$atts.'>'.$text.'</a>'.$post;
     
@@ -524,7 +524,7 @@ class Textile2 {
     function getRefs($text) 
     {
         return preg_replace_callback("/(?<=^|\s)\[(.+)\]((?:http:\/\/|\/)\S+)(?=\s|$)/U",
-            array($this, "refs"),$text);
+            array(&$this, "refs"),$text);
     }
     
 // -------------------------------------------------------------
@@ -555,7 +555,7 @@ class Textile2 {
             \!                   # closing
             (?::(\S+))?          # optional href
             (?=\s|$)             # lookahead: space or end of string
-        /Ux",array($this, "fImage"),$text);
+        /Ux",array(&$this, "fImage"),$text);
     }
 
 // -------------------------------------------------------------
@@ -591,7 +591,7 @@ class Textile2 {
             (?:$|([\]}])|
             (?=[[:punct:]]{1,2}|
             \s))                             # 4 closing bracket?
-        /Ux",array($this, "fCode"),$text);
+        /Ux",array(&$this, "fCode"),$text);
     }
 
 // -------------------------------------------------------------
@@ -907,7 +907,7 @@ class Textile2 {
     
     foreach($oktags as $tag){
         $text = preg_replace_callback("/\t*<(".$tag.")\s*([^>]*)>(.*)<\/\\1>/Usi",
-        array($this, "processTag"),$text);
+        array(&$this, "processTag"),$text);
     }
 
         $glyphs = array(  
