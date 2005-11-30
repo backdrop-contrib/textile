@@ -16,9 +16,6 @@ by [textile] and (optional) [/textile] tags.  If an input format is
 designed or required to use Textile, this option can be disabled, and
 all input will be filtered.
 
-More information about Textile can be found at the Textile home page
-<http://textism.com/tools/textile/>.
-
 Files
   - textile.module
       the actual module (PHP source code)
@@ -29,13 +26,6 @@ Files
       module ported by Jim Riggs (PHP source code); this file is
       available separately under the GNU GPL from
       <http://jimandlissa.com/project/textilephp>
-
-  - smartypants-php (directory)
-      a PHP port of John Gruber's (<http://daringfireball.net/>) Perl
-      SmartyPants.pl Movable Type plugin ported by Matthew McGlynn
-      (PHP source code); this file is available separately under a
-      custom redistribution license from
-      <http://monauraljerk.org/smartypants-php/>
 
   - README.txt (this file)
       general module information

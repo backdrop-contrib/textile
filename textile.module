@@ -5,7 +5,7 @@
  * The textile module allows input of Textile shorthand.
  *
  * @version $Id$
- * @copyright Copyright (c) 2003-2004 Jim Riggs.  All rights reserved.
+ * @copyright Copyright (c) 2003-2005 Jim Riggs.  All rights reserved.
  * @author Jim Riggs <drupal at jimandlissa dot com>
  */
 
@@ -47,8 +47,6 @@
 // update automatically
 _textile_install();
 
-require_once(dirname(__FILE__) . '/textilephp/Textile.php');
-
 /********************************************************************
  * Drupal Hooks
  ********************************************************************/
@@ -65,7 +63,7 @@ function textile_filter($in_op, $in_delta = 0, $in_format = -1, $in_text = '') {
       return t('Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.');
 
     case 'process':
-      if (variable_get("textile_tags_$in_format", 0)) {
+      if (variable_get("textile_tags_${in_format}", 0)) {
         return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process', $in_text);
       }
       else {
@@ -73,7 +71,19 @@ function textile_filter($in_op, $in_delta = 0, $in_format = -1, $in_text = '') {
       }
 
     case 'settings':
-      return form_group(t('Textile filter'), form_checkbox(t('Use tags'), "textile_tags_$in_format", 1, variable_get("textile_tags_$in_format", 0), t('If enabled, only text between [textile] and optional [/textile] tags will be processed.  Otherwise, all text will be processed as Textile markup.')));
+      $the_form = array();
+      $the_form['textile_settings'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Textile filter'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE);
+      $the_form['textile_settings']['textile_tags_${in_format}'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Use tags'),
+        '#default_value' => variable_get("textile_tags_${in_format}", 0),
+        '#description' => t('If enabled, only text between [textile] and optional [/textile] tags will be processed.  Otherwise, all text will be processed as Textile markup.'));
+
+      return $the_form;
 
     default:
       return $in_text;
@@ -353,7 +363,7 @@ function textile_filter_tips($in_delta, $in_format, $in_is_long = FALSE) {
 </table>
 ');
   }
-  elseif (variable_get("textile_tags_$in_format", 0)) {
+  elseif (variable_get("textile_tags_${in_format}", 0)) {
     return t('You can use Textile markup to format text between the [textile] and (optional) [/textile] tags.');
   }
   else {
@@ -403,7 +413,7 @@ function _textile_version() {
    * to determine newer/older versions for upgrade and installation
    * purposes.
    */
-  return array('text' => '4.6r1', 'build' => 2005032101);
+  return array('text' => '4.7r1', 'build' => 2005112900);
 } // function _textile_version
 
 /**
@@ -453,11 +463,11 @@ function _textile_install() {
   }
 
   // update old tags
-  db_query("UPDATE {node} SET body = REPLACE(body, '\001textile1\001\n', '[textile]\n\n') WHERE body LIKE '%%\001textile1\001\n%%'");
-  db_query("UPDATE {node} SET teaser = REPLACE(teaser, '\001textile1\001\n', '[textile]\n\n') WHERE teaser LIKE '%%\001textile1\001\n%%'");
+  db_query("UPDATE {node_revisions} SET body = REPLACE(body, '\001textile1\001\n', '[textile]\n\n') WHERE body LIKE '%%\001textile1\001\n%%'");
+  db_query("UPDATE {node_revisions} SET teaser = REPLACE(teaser, '\001textile1\001\n', '[textile]\n\n') WHERE teaser LIKE '%%\001textile1\001\n%%'");
 
-  db_query("UPDATE {node} SET body = REPLACE(body, '\001textile2\001\n', '[textile]\n\n') WHERE body LIKE '%%\001textile2\001\n%%'");
-  db_query("UPDATE {node} SET teaser = REPLACE(teaser, '\001textile2\001\n', '[textile]\n\n') WHERE teaser LIKE '%%\001textile2\001\n%%'");
+  db_query("UPDATE {node_revisions} SET body = REPLACE(body, '\001textile2\001\n', '[textile]\n\n') WHERE body LIKE '%%\001textile2\001\n%%'");
+  db_query("UPDATE {node_revisions} SET teaser = REPLACE(teaser, '\001textile2\001\n', '[textile]\n\n') WHERE teaser LIKE '%%\001textile2\001\n%%'");
 
 
   // installed successfully
@@ -480,40 +490,12 @@ function _textile_process($in_matches) {
   static $s_textile = NULL;
 
   if ($s_textile === NULL) {
+    require_once(dirname(__FILE__) . '/DrupalTextile.inc');
+
     $s_textile = new DrupalTextile(array('charset' => 'UTF-8', 'char_encoding' => 0, 'smarty_mode' => DEFAULT_OPERATION_MODE));
   }
 
   return $s_textile->process($in_matches[1]);
 } // function _textile_process
-
-/**
- * DrupalTextile is a subclass of MTLikeTextile that properly handles
- * Textile footnote URL fragments in a Drupal context.
- */
-class DrupalTextile extends MTLikeTextile {
-  /**
-   * Creates a new DrupalTextile object using the provided options.
-   *
-   * @param $in_options
-   *   The <code>array</code> specifying the options for this object.
-   */
-  function DrupalTextile($in_options = array()) {
-    parent::MTLikeTextile($in_options);
-  } // function DrupalTextile
-
-  /**
-   * Processes the provided Textile-formatted text, properly handling
-   * URL fragments in a Drupal context.
-   *
-   * @param $in_string
-   *   The <code>string</code> specifying the text to be processed.
-   *
-   * @return
-   *   A <code>string</code> containing the processed text.
-   */
-  function process($in_string) {
-    return preg_replace('{(<a href=")(#[^"]*")}', '$1' . request_uri() . '$2', parent::process($in_string));
-  } // function process
-} // class DrupalTextile
 
 ?>

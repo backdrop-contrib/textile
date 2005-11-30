@@ -2,10 +2,20 @@ textile.module
 CHANGELOG.txt
 $Id$
 
-2004-03-21
+2005-11-29
+  - release 4.7r1/2005112900
+  - textile.module
+    - updated for Drupal 4.7
+    - only load the Textile classes when needed (addresses task 28632
+      reported by drumm)
+    - removed DrupalTextile class
+  - DrupalTextile.inc: initial version; moves DrupalTextile class to
+    its own include file (addresses task 28632 reported by drumm)
+
+2005-03-21
   - release 4.6r1/2005032101
 
-2004-03-21
+2005-03-21
   - release 4.5r3/2005032100 (versioning changed to better coincide
     with Drupal versions)
   - textile.module
