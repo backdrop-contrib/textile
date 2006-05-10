@@ -2,6 +2,17 @@ textile.module
 CHANGELOG.txt
 $Id$
 
+2006-05-10
+  - release 4.7r2/2006051000
+  - textile.module
+    - updated coding style to more-closely resemble Drupal's standards
+    - removed install
+  - DrupalTextile.inc
+    - updated coding style to more-closely resemble Drupal's standards
+    - removed process()
+    - added format_url() which uses Drupal's url() function (addresses
+      feature 57592 requested by njivy)
+
 2005-11-29
   - release 4.7r1/2005112900
   - textile.module

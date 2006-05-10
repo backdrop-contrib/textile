@@ -5,47 +5,9 @@
  * The textile module allows input of Textile shorthand.
  *
  * @version $Id$
- * @copyright Copyright (c) 2003-2005 Jim Riggs.  All rights reserved.
+ * @copyright Copyright (c) 2003-2006 Jim Riggs.  All rights reserved.
  * @author Jim Riggs <drupal at jimandlissa dot com>
  */
-
-/* This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
- */
-
-/* Code notes:
- *   - Local, non-boolean variables start with "the" as in $the_output
- *     and $the_version.  Local boolean variables start with words such
- *     as "is" or "has" to indicate their meaning as in $is_installed
- *     and $has_title.  Short-lived loop variables use standard, short
- *     names as in $i and $x.
- *
- *   - Function parameters are prefixed with "in", "out", or "io" to
- *     indicate their use as input, output, or input-output,
- *     respectively, as in $in_title.
- *
- *   - All functions are prefixed with "textile_" and words are
- *     separated with underscores.
- *
- *   - I make extensive use of heredoc syntax and multiline strings.
- *     It looks much nicer than dozens of "$var .= ..." lines and is
- *     easier to read and format -- especially the HTML tags.  It helps
- *     in outputting HTML pages that are well-formatted and readable.
- */
-
-// update automatically
-_textile_install();
 
 /********************************************************************
  * Drupal Hooks
@@ -54,8 +16,8 @@ _textile_install();
 /**
  * Implementation of hook_filter().
  */
-function textile_filter($in_op, $in_delta = 0, $in_format = -1, $in_text = '') {
-  switch ($in_op) {
+function textile_filter($op, $delta = 0, $format = -1, $text = '') {
+  switch ($op) {
     case 'list':
       return array(t("Textile"));
 
@@ -63,45 +25,47 @@ function textile_filter($in_op, $in_delta = 0, $in_format = -1, $in_text = '') {
       return t('Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.');
 
     case 'process':
-      if (variable_get("textile_tags_${in_format}", 0)) {
-        return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process', $in_text);
+      if (variable_get("textile_tags_$format", 0)) {
+        return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process', $text);
       }
       else {
-        return _textile_process(array(NULL, $in_text));
+        return _textile_process(array(NULL, $text));
       }
 
     case 'settings':
-      $the_form = array();
-      $the_form['textile_settings'] = array(
+      $form = array();
+      $form['textile_settings'] = array(
         '#type' => 'fieldset',
         '#title' => t('Textile filter'),
         '#collapsible' => TRUE,
-        '#collapsed' => TRUE);
-      $the_form['textile_settings']['textile_tags_${in_format}'] = array(
+        '#collapsed' => TRUE
+      );
+      $form['textile_settings']['textile_tags_$format'] = array(
         '#type' => 'checkbox',
         '#title' => t('Use tags'),
-        '#default_value' => variable_get("textile_tags_${in_format}", 0),
-        '#description' => t('If enabled, only text between [textile] and optional [/textile] tags will be processed.  Otherwise, all text will be processed as Textile markup.'));
+        '#default_value' => variable_get("textile_tags_$format", 0),
+        '#description' => t('If enabled, only text between [textile] and optional [/textile] tags will be processed.  Otherwise, all text will be processed as Textile markup.')
+      );
 
-      return $the_form;
+      return $form;
 
     default:
-      return $in_text;
+      return $text;
   }
-} // function textile_filter
+}
 
 /**
  * Implementation of hook_filter_tips().
  */
-function textile_filter_tips($in_delta, $in_format, $in_is_long = FALSE) {
-  if ($in_is_long) {
+function textile_filter_tips($delta, $format, $long = FALSE) {
+  if ($long) {
     return t('
 <h1>Textile Help</h1>
 
 <h2>Block modifier syntax:</h2>
 
 <p>
-  CSS attributes can be applied to blocks (paragraphes, headers,
+  CSS attributes can be applied to blocks (paragraphs, headers,
   etc.). CSS classes are specifed with "<code>(<i>class</i>)</code>";
   CSS IDs are specified with "<code>(#<i>id</i>)</code>"; both can be
   specified with "<code>(<i>class</i>#<i>id</i>)</code>". An arbtirary
@@ -363,35 +327,33 @@ function textile_filter_tips($in_delta, $in_format, $in_is_long = FALSE) {
 </table>
 ');
   }
-  elseif (variable_get("textile_tags_${in_format}", 0)) {
+  elseif (variable_get("textile_tags_$format", 0)) {
     return t('You can use Textile markup to format text between the [textile] and (optional) [/textile] tags.');
   }
   else {
     return t('You can use Textile markup to format text.');
   }
-} // function textile_filter_tips
+}
 
 /**
  * Implementation of hook_help().
  */
-function textile_help($in_section = 'admin/help#textile') {
-  switch ($in_section) {
+function textile_help($section = 'admin/help#textile') {
+  switch ($section) {
     case 'admin/modules#description':
       return textile_filter('description');
 
     case 'admin/help#textile':
       return t('
 <p>
-  The Textile module allows users to enter content using <a
-  href="http://textism.com/tools/textile/"
-  title="Textile">Textile</a>, a simple, plain text syntax that is
-  filtered into valid XHTML. The <a href="filter/tips" title="Textile
-  help">filter tips page</a> provides syntax descriptions and
-  examples.
+  The Textile module allows users to enter content using Textile, a
+  simple, plain text syntax that is filtered into valid XHTML. The <a
+  href="filter/tips" title="Textile help">filter tips page</a>
+  provides syntax descriptions and examples.
 </p>
 ');
   }
-} // function textile_help
+}
 
 /********************************************************************
  * Module Functions
@@ -413,71 +375,13 @@ function _textile_version() {
    * to determine newer/older versions for upgrade and installation
    * purposes.
    */
-  return array('text' => '4.7r1', 'build' => 2005112900);
-} // function _textile_version
-
-/**
- * Indicates whether or not the textile module is installed and
- * up-to-date, transparently upgrading compatible versions when
- * possible.
- *
- * @return
- *   <code>TRUE</code> if the module is up to date;
- *   <code>FALSE</code>, otherwise.
- *
- * @private
- */
-function _textile_is_installed() {
-  $the_current_ver = _textile_version();
-  $the_installed_ver = variable_get('textile_version', NULL);
-
-  // Handle versions that can be safely/transparently updated.
-  if ($the_installed_ver && ($the_installed_ver['build'] < $the_current_ver['build'])) {
-    variable_set('textile_version', $the_current_ver);
-
-    return TRUE;
-  }
-
-  return ($the_current_ver['build'] == $the_installed_ver['build']);
-} // function _textile_is_installed
-
-/**
- * Installs the textile module, updating existing Textile-formatted
- * nodes if needed and creating the <code>textile_version</code>
- * variable.
- *
- * @private
- */
-function _textile_install() {
-  if (_textile_is_installed()) {
-    return;
-  }
-
-  // get version information
-  $the_current_ver = _textile_version();
-  $the_installed_ver = variable_get('textile_version', NULL);
-
-  if ($the_installed_ver['build'] > $the_current_ver['build']) {
-    // don't install an older version
-    return;
-  }
-
-  // update old tags
-  db_query("UPDATE {node_revisions} SET body = REPLACE(body, '\001textile1\001\n', '[textile]\n\n') WHERE body LIKE '%%\001textile1\001\n%%'");
-  db_query("UPDATE {node_revisions} SET teaser = REPLACE(teaser, '\001textile1\001\n', '[textile]\n\n') WHERE teaser LIKE '%%\001textile1\001\n%%'");
-
-  db_query("UPDATE {node_revisions} SET body = REPLACE(body, '\001textile2\001\n', '[textile]\n\n') WHERE body LIKE '%%\001textile2\001\n%%'");
-  db_query("UPDATE {node_revisions} SET teaser = REPLACE(teaser, '\001textile2\001\n', '[textile]\n\n') WHERE teaser LIKE '%%\001textile2\001\n%%'");
-
-
-  // installed successfully
-  variable_set('textile_version', $the_current_ver);
-} // function _textile_install
+  return array('text' => '4.7r2', 'build' => 2006051000);
+}
 
 /**
  * Performs the appropriate Textile filtering on the provided text.
  *
- * @param $in_matches
+ * @param $matches
  *   The <code>array</code> specifying the text to be filtered at
  *   index 1.
  *
@@ -486,16 +390,16 @@ function _textile_install() {
  *
  * @private
  */
-function _textile_process($in_matches) {
-  static $s_textile = NULL;
+function _textile_process($matches) {
+  static $textile = NULL;
 
-  if ($s_textile === NULL) {
+  if ($textile === NULL) {
     require_once(dirname(__FILE__) . '/DrupalTextile.inc');
 
-    $s_textile = new DrupalTextile(array('charset' => 'UTF-8', 'char_encoding' => 0, 'smarty_mode' => DEFAULT_OPERATION_MODE));
+    $textile = new DrupalTextile(array('charset' => 'UTF-8', 'char_encoding' => 0, 'smarty_mode' => DEFAULT_OPERATION_MODE));
   }
 
-  return $s_textile->process($in_matches[1]);
-} // function _textile_process
+  return $textile->process($matches[1]);
+}
 
 ?>
