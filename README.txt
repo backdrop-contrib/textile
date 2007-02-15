@@ -20,6 +20,9 @@ Files
   - textile.module
       the actual module (PHP source code)
 
+  - textile.info
+      the module information file used by Drupal
+
   - textilephp (directory)
       a PHP port of Brad Choate's (<brad at bradchoate dot com>)
       Textile.pm (<http://bradchoate.com/mt-plugins/textile>) Perl

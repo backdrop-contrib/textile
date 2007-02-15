@@ -2,6 +2,12 @@ textile.module
 CHANGELOG.txt
 $Id$
 
+2007-02-15
+  - release 5.x-1.0
+  - textile.module: updated for Drupal 5
+  - textile.info: new file
+  - INSTALL.txt, README.txt: updated for Drupal 5 changes
+
 2006-05-10
   - release 4.7r2/2006051000
   - textile.module

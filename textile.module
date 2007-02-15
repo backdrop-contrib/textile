@@ -5,8 +5,8 @@
  * The textile module allows input of Textile shorthand.
  *
  * @version $Id$
- * @copyright Copyright (c) 2003-2006 Jim Riggs.  All rights reserved.
- * @author Jim Riggs <drupal at jimandlissa dot com>
+ * @copyright Copyright (c) 2003-2007 Jim Riggs.  All rights reserved.
+ * @author Jim Riggs <drupal at jim and lissa dot com>
  */
 
 /********************************************************************
@@ -37,8 +37,7 @@ function textile_filter($op, $delta = 0, $format = -1, $text = '') {
       $form['textile_settings'] = array(
         '#type' => 'fieldset',
         '#title' => t('Textile filter'),
-        '#collapsible' => TRUE,
-        '#collapsed' => TRUE
+        '#collapsible' => TRUE
       );
       $form['textile_settings']['textile_tags_$format'] = array(
         '#type' => 'checkbox',
@@ -340,9 +339,6 @@ function textile_filter_tips($delta, $format, $long = FALSE) {
  */
 function textile_help($section = 'admin/help#textile') {
   switch ($section) {
-    case 'admin/modules#description':
-      return textile_filter('description');
-
     case 'admin/help#textile':
       return t('
 <p>
@@ -358,25 +354,6 @@ function textile_help($section = 'admin/help#textile') {
 /********************************************************************
  * Module Functions
  ********************************************************************/
-
-/**
- * Returns the version of this release of the Textile module.
- *
- * @return
- *   An <code>array</code> with keys 'text' and 'build' containing the
- *   text version and build ID of this release, respectively.
- *
- * @private
- */
-function _textile_version() {
-  /* Why text and an ID?  Well, the text is easier for the user to
-   * read and understand while the build ID, being a number (a date
-   * with a serial, specifically), is easier for the developer to use
-   * to determine newer/older versions for upgrade and installation
-   * purposes.
-   */
-  return array('text' => '4.7r2', 'build' => 2006051000);
-}
 
 /**
  * Performs the appropriate Textile filtering on the provided text.
