@@ -39,7 +39,7 @@ function textile_filter($op, $delta = 0, $format = -1, $text = '') {
         '#title' => t('Textile filter'),
         '#collapsible' => TRUE
       );
-      $form['textile_settings']['textile_tags_$format'] = array(
+      $form['textile_settings']["textile_tags_$format"] = array(
         '#type' => 'checkbox',
         '#title' => t('Use tags'),
         '#default_value' => variable_get("textile_tags_$format", 0),
