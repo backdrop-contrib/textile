@@ -2,6 +2,13 @@ textile.module
 CHANGELOG.txt
 $Id$
 
+2007-06-27
+  - Transferred owenership to joshk
+  - Changed to use external library from thresholdstate, based on:
+    http://leon.info.tm/en/salvation-textile-drupal-module
+  - See issue:
+    http://drupal.org/node/143730
+
 2007-03-01
   - release 5.x-1.1
   - textile.module: fix quotes for filter settings (fixes bug 123860
