@@ -23,12 +23,13 @@ Files
   - textile.info
       the module information file used by Drupal
 
-  - textilephp (directory)
-      a PHP port of Brad Choate's (<brad at bradchoate dot com>)
-      Textile.pm (<http://bradchoate.com/mt-plugins/textile>) Perl
-      module ported by Jim Riggs (PHP source code); this file is
-      available separately under the GNU GPL from
-      <http://jimandlissa.com/project/textilephp>
+  - classTextile.php (external dependency)
+      you will need to download the most up-to-date textile library from:
+      
+      http://textile.thresholdstate.com/
+      
+      and place its classTetxile.php file in to the same directory as 
+      textile.module
 
   - README.txt (this file)
       general module information
