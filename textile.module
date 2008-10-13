@@ -337,8 +337,8 @@ function textile_filter_tips($delta, $format, $long = FALSE) {
 /**
  * Implementation of hook_help().
  */
-function textile_help($section = 'admin/help#textile') {
-  switch ($section) {
+function textile_help($path = 'admin/help#textile', $arg) {
+  switch ($path) {
     case 'admin/help#textile':
       return t('
 <p>
@@ -356,7 +356,7 @@ function textile_help($section = 'admin/help#textile') {
  *
  * Run a check for the library and set an error message if not present.
  */
-function hook_enable() {
+function textile_enable() {
   if ($error = _textile_lib_check()) {
     drupal_set_message($error, 'error');
   }
@@ -384,13 +384,13 @@ function _textile_process($matches) {
 
   if ($textile === NULL) {
     $path = drupal_get_path('module', 'textile');
-    include_once($path . '/classTextile.php');
+    include_once($path .'/classTextile.php');
 
     $textile = new Textile();
     //$textile->hu is the string that preceeds all relative URLs.
     //So I copied the part of url() implementation in common.inc
     //not tested in real non-Apache webserver yet
-    $textile->hu = base_path().((strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') === FALSE) ? 'index.php' : '').((bool)variable_get('clean_url', '0') ? '' : '?q=');
+    $textile->hu = base_path() . ((strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') === FALSE) ? 'index.php' : '') . ((bool)variable_get('clean_url', '0') ? '' : '?q=');
   }
   //should there be any encoding declaration of some sort?  Can't find how to do it though
   return $textile->TextileThis($matches[1]);
@@ -403,6 +403,6 @@ function _textile_process($matches) {
 function _textile_lib_check() {
   $path = drupal_get_path('module', 'textile');
   if (!file_exists($path .'/classTextile.php')) {
-    return t('The classTextile.php library is missing. Drupal cannot use textile markup without this library. Please check the <a href="@url">textile module INSTALL documentation</a> for information on how to download this.', array('@url' => 'http://cvs.drupal.org/viewcvs/*checkout*/drupal/contributions/modules/textile/INSTALL.txt'));
+    return t('The classTextile.php library is missing. Drupal cannot use textile markup without this library. Please check the <a href="!url">textile module INSTALL documentation</a> for information on how to download this.', array('!url' => 'http://cvs.drupal.org/viewcvs/*checkout*/drupal/contributions/modules/textile/INSTALL.txt'));
   }
 }
