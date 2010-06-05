@@ -1,8 +1,5 @@
 ; $Id$
-name = Textile
-description = Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.
-
-version = VERSION
-project = textile
-datestamp = DATESTAMP
+name = "Textile"
+description = "Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML."
+package = "Filters"
 core = 6.x

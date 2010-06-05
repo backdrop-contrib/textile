@@ -3,6 +3,7 @@ CHANGELOG.txt
 $Id$
 
 2010-06-10
+  #388022 by snelson, kiam: .info file should not contain version, project or date information.
   #589744 by kiam: Remove the directory po.
   #802320 by kiam: INSTALL.txt points to out-of-date classTextile.php sources.
 
