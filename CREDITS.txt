@@ -1,5 +1,3 @@
-textile.module
-CREDITS.txt
 $Id$
 
 Written by
