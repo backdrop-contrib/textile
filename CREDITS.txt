@@ -1,4 +1,4 @@
-$Id$
+# $Id$
 
 Written by
   - Jim Riggs <drupal at jimandlissa dot com>
