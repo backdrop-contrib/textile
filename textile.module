@@ -50,7 +50,6 @@ function textile_settings($form, &$form_state, $filter, $format, $defaults, $fil
 
 
 function textile_process_filter($text, $filter, $format, $langcode, $cache, $cache_id) {
-  print_r($filter);
   if($filter->settings['textile_tags']) {
     return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process', $text);
   }
