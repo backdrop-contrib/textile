@@ -4,5 +4,6 @@ description = "Allows content to be submitted using Textile, a simple, plain tex
 package = "Filters"
 core = 7.x
 
+files[] = textile.install
 files[] = textile.module
 files[] = textile.tips.inc
