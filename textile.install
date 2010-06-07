@@ -20,7 +20,12 @@ function textile_requirements($phase) {
     );
   }
   else {
-    $requirements['textile']['severity'] = REQUIREMENT_OK;
+    module_load_include('php', 'textile', 'classTextile');
+    $textile = new Textile();
+    $requirements['textile'] = array(
+      'severity' => REQUIREMENT_OK,
+      'value' => $textile->ver,
+    );
   }
 
   $requirements['textile']['title'] = t('classTextile library');
