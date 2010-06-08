@@ -19,10 +19,12 @@ function textile_filter($op, $delta = 0, $format = -1, $text = '') {
 
     case 'process':
       if (variable_get("textile_tags_$format", 0)) {
-        return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process', $text);
+        return preg_replace_callback(
+          '{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process_match', $text
+        );
       }
       else {
-        return _textile_process(array(NULL, $text));
+        return _textile_process_match(array(NULL, $text));
       }
 
     case 'settings':
@@ -78,15 +80,9 @@ function textile_help($path = 'admin/help#textile', $arg) {
 }
 
 /**
- * Performs the appropriate Textile filtering on the provided text.
- *
- * @param $matches
- *   The array specifying the text to be filtered at index 1.
- *
- * @return
- *   A string containing the filtered text.
+ * Helper function for preg_replace_callback().
  */
-function _textile_process($matches) {
+function _textile_process_match($matches) {
   static $textile = NULL;
 
   if (empty($textile)) {
