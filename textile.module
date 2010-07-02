@@ -7,57 +7,45 @@
  */
 
 /**
- * Implements hook_filter().
+ * Implements hook_filter_info().
  */
-function textile_filter($op, $delta = 0, $format = -1, $text = '') {
-  switch ($op) {
-    case 'list':
-      return array(t("Textile"));
+function textile_filter_info() {
+  $filters['textile'] = array(
+    'title' => t('Textile'),
+    'description' => t('Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.'),
+    'process callback' => '_textile_process',
+    'settings callback' => '_textile_settings',
+    'default settings' => array(
+      'textile_tags' => FALSE,
+    ),
+    'tips callback' => '_textile_filter_tips',
+  );
+  return $filters;
+}
 
-    case 'description':
-      return t('Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.');
-
-    case 'process':
-      if (variable_get("textile_tags_$format", 0)) {
-        return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process', $text);
-      }
-      else {
-        return _textile_process(array(NULL, $text));
-      }
-
-    case 'settings':
-      $form = array();
-      $form['textile_settings'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('Textile filter'),
-        '#collapsible' => TRUE
-      );
-      $form['textile_settings']["textile_tags_$format"] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Use tags'),
-        '#default_value' => variable_get("textile_tags_$format", 0),
-        '#description' => t('If enabled, only text between [textile] and optional [/textile] tags will be processed; otherwise, all text will be processed as Textile markup.')
-      );
-
-      return $form;
-
-    default:
-      return $text;
+/**
+ * Implements hook_help().
+ */
+function textile_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#textile':
+      return '<p>' . t('
+  The Textile module allows users to enter content using Textile, a
+  simple, plain text syntax that is filtered into valid XHTML. The <a
+  href="filter/tips" title="Textile help">filter tips page</a>
+  provides syntax descriptions and examples.') . '</p>';
   }
 }
 
 /**
- * Implements hook_filter_tips().
+ * Filter tips callback for the Textile filter.
  */
-/**
- * Implements hook_filter_tips().
- */
-function textile_filter_tips($delta, $format, $long = FALSE) {
+function _textile_filter_tips($filter, $format, $long) {
   if ($long) {
     module_load_include('inc', 'textile', 'textile.tips');
     return _textile_filter_long_tips();
   }
-  elseif (variable_get("textile_tags_$format", 0)) {
+  elseif (isset($filter->settings['textile_tags']) && $filter->settings['textile_tags']) {
     return t('You can use Textile markup to format text between the [textile] and (optional) [/textile] tags.');
   }
   else {
@@ -66,30 +54,21 @@ function textile_filter_tips($delta, $format, $long = FALSE) {
 }
 
 /**
- * Implements hook_help().
+ * Textile filter. Provides filtering of Textile tags into XHTML.
  */
-function textile_help($path = 'admin/help#textile', $arg) {
-  switch ($path) {
-    case 'admin/help#textile':
-      return '<p>' .
-      t('The Textile module allows users to enter content using Textile, a
-        simple, plain text syntax that is filtered into valid XHTML. The <a
-        href="@tips_url" title="Textile help">filter tips page</a>
-        provides syntax descriptions and examples.', array('@tips_url' => url('filter/tips'))) .
-      '</p>';
+function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  if ($filter->settings['textile_tags']) {
+    return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process_match', $text);
+  }
+  else {
+    return _textile_process_match(array(NULL, $text));
   }
 }
 
 /**
- * Perform the appropriate Textile filtering on the provided text.
- *
- * @param $matches
- *   The array specifying the text to be filtered at index 1.
- *
- * @return
- *   A string containing the filtered text.
+ * Helper function for preg_replace_callback().
  */
-function _textile_process($matches) {
+function _textile_process_match($matches) {
   static $textile = NULL;
 
   if (empty($textile)) {
@@ -101,4 +80,20 @@ function _textile_process($matches) {
   }
 
   return $textile->TextileThis($matches[1]);
+}
+
+/**
+ * Settings callback for the Textile filter.
+ */
+function _textile_settings($form, &$form_state, $filter, $format, $defaults, $filters) {
+  $settings = array();
+
+  $settings['textile_tags'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use tags'),
+    '#default_value' => isset($filter->settings['textile_tags']) ? $filter->settings['textile_tags'] : $defaults['textile_tags'],
+    '#description' => t('If enabled, only text between [textile] and optional [/textile] tags will be processed; otherwise, all text will be processed as Textile markup.')
+  );
+
+  return $settings;
 }
