@@ -9,9 +9,9 @@
   formats. Uncompress the download, and place the classTextile.php file
   into the same directory as textile.module.
 
-* Log into your site, enable the Textile module on the
-  admin/build/modules page. Finally, you must add the Textile filter to
-  the appropriate input formats and set any desired configuration options.
+* Log into your site, enable the Textile module on the admin/modules page.
+  Finally, you must add the Textile filter to the appropriate input formats and
+  set any desired configuration options.
 
 NOTE: you need to be careful with how your input filters are ordered. I
 recommend setting up a special filter for textile. Disable the
