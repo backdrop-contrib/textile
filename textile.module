@@ -20,6 +20,7 @@ function textile_filter_info() {
     ),
     'tips callback' => '_textile_filter_tips',
   );
+
   return $filters;
 }
 
@@ -40,7 +41,7 @@ function textile_help($path, $arg) {
 /**
  * Filter tips callback for the Textile filter.
  */
-function _textile_filter_tips($filter, $format, $long) {
+function _textile_filter_tips($filter, $format, $long = FALSE) {
   if ($long) {
     module_load_include('inc', 'textile', 'textile.tips');
     return _textile_filter_long_tips();
@@ -54,21 +55,9 @@ function _textile_filter_tips($filter, $format, $long) {
 }
 
 /**
- * Textile filter. Provides filtering of Textile tags into XHTML.
- */
-function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id) {
-  if ($filter->settings['textile_tags']) {
-    return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process_match', $text);
-  }
-  else {
-    return _textile_process_match(array(NULL, $text));
-  }
-}
-
-/**
  * Helper function for preg_replace_callback().
  */
-function _textile_process_match($matches) {
+function _textile_match_process($matches) {
   static $textile = NULL;
 
   if (empty($textile)) {
@@ -80,6 +69,18 @@ function _textile_process_match($matches) {
   }
 
   return $textile->TextileThis($matches[1]);
+}
+
+/**
+ * Textile filter. Provides filtering of Textile tags into XHTML.
+ */
+function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  if ($filter->settings['textile_tags']) {
+    return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_match_process', $text);
+  }
+  else {
+    return _textile_process_match(array(NULL, $text));
+  }
 }
 
 /**
