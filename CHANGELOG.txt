@@ -6,7 +6,7 @@
   #802320 by kiam: INSTALL.txt points to out-of-date classTextile.php sources.
 
 2007-06-27
-  - Transferred owenership to joshk
+  - Transferred ownership to joshk
   - Changed to use external library from thresholdstate, based on:
     http://leon.info.tm/en/salvation-textile-drupal-module
   - See issue:
