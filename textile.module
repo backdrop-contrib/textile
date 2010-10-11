@@ -79,7 +79,7 @@ function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id)
     return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_match_process', $text);
   }
   else {
-    return _textile_process_match(array(NULL, $text));
+    return _textile_match_process(array(NULL, $text));
   }
 }
 

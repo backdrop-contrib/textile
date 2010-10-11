@@ -1,6 +1,10 @@
 # $Id$
 # All the dates reported here are referred to UTC.
 
+2010-10-11
+----------
+#934870 by mollo_ffmc: Call to undefined function _textile_process_match().
+
 2010-07-02
 ----------
 #843396 by kiam: Change the long tips shown for the filter.
