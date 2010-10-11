@@ -65,18 +65,18 @@ function textile_help($path, $arg) {
 function _textile_process($text, $format) {
   if (variable_get("textile_tags_$format", 0)) {
     return preg_replace_callback(
-      '{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_process_match', $text
+      '{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_match_process', $text
     );
   }
   else {
-    return _textile_process_match(array(NULL, $text));
+    return _textile_match_process(array(NULL, $text));
   }
 }
 
 /**
  * Helper function for preg_replace_callback().
  */
-function _textile_process_match($matches) {
+function _textile_match_process($matches) {
   static $textile = NULL;
 
   if (empty($textile)) {
