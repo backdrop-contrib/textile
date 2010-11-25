@@ -84,7 +84,7 @@ function _textile_filter_tips($filter, $format, $long = FALSE) {
  * Helper function for preg_replace_callback().
  */
 function _textile_match_process($matches) {
-  $textile = &drupal_static(__FUNCTION__, NULL);
+  $textile = &Vars::staticValue(__FUNCTION__, NULL);
 
   if (empty($textile)) {
     $path = textile_library_path();
