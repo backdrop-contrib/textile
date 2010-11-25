@@ -31,11 +31,37 @@ function textile_help($path, $arg) {
   switch ($path) {
     case 'admin/help#textile':
       return '<p>' . t('
-  The Textile module allows users to enter content using Textile, a
-  simple, plain text syntax that is filtered into valid XHTML. The <a
-  href="filter/tips" title="Textile help">filter tips page</a>
-  provides syntax descriptions and examples.') . '</p>';
+        The Textile module allows users to enter content using Textile, a
+        simple, plain text syntax that is filtered into valid XHTML. The <a
+        href="filter/tips" title="Textile help">filter tips page</a>
+        provides syntax descriptions and examples.') . '</p>';
   }
+}
+
+/**
+ * Retrivies where the Textile library has been copied.
+ *
+ * @return
+ *   The path of the Textile library.
+ */
+function textile_library_path() {
+  $path = '';
+  $vars = new Vars();
+
+  foreach ($vars->getLibraryPath('textile', drupal_get_path('module', 'textile') . '/include') as $dir) {
+    $bool = (
+      is_dir($dir) && file_exists("$dir/classTextile.php") &&
+      is_file("$dir/classTextile.php")
+    );
+    if ($bool) {
+      $path = $dir;
+    }
+  }
+
+  // Allow third-party modules to alter the path where the library is found.
+  drupal_alter('textile_library_path', $path);
+
+  return $path;
 }
 
 /**
@@ -58,14 +84,17 @@ function _textile_filter_tips($filter, $format, $long = FALSE) {
  * Helper function for preg_replace_callback().
  */
 function _textile_match_process($matches) {
-  static $textile = NULL;
+  $textile = &drupal_static(__FUNCTION__, NULL);
 
   if (empty($textile)) {
-    module_load_include('php', 'textile', 'classTextile');
+    $path = textile_library_path();
+    if ($path) {
+      require_once $path . 'classTextile.php';
 
-    $textile = new Textile();
-    //$textile->hu is the string that preceeds all relative URLs.
-    $textile->hu = url(NULL);
+      $textile = new Textile();
+      // $textile->hu is the string that preceeds all relative URLs.
+      $textile->hu = url(NULL);
+    }
   }
 
   return $textile->TextileThis($matches[1]);
