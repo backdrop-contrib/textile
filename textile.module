@@ -45,7 +45,7 @@ function textile_help($path, $arg) {
  *   The path of the Textile library.
  */
 function textile_library_path() {
-  $path = '';
+  $path = &Vars::staticValue(__FUNCTION__, '');
   $vars = new Vars();
 
   foreach ($vars->getLibraryPath('textile', drupal_get_path('module', 'textile') . '/include') as $dir) {
@@ -55,6 +55,7 @@ function textile_library_path() {
     );
     if ($bool) {
       $path = $dir;
+      break;
     }
   }
 
