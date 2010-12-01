@@ -60,6 +60,33 @@ function textile_help($path, $arg) {
 }
 
 /**
+ * Retrivies where the Textile library has been copied.
+ *
+ * @return
+ *   The path of the Textile library.
+ */
+function textile_library_path() {
+  $path = &Vars::staticValue(__FUNCTION__, '');
+  $vars = new Vars();
+
+  foreach ($vars->getLibraryPath('textile', drupal_get_path('module', 'textile') . '/include') as $dir) {
+    $bool = (
+      is_dir($dir) && file_exists("$dir/classTextile.php") &&
+      is_file("$dir/classTextile.php")
+    );
+    if ($bool) {
+      $path = $dir;
+      break;
+    }
+  }
+
+  // Allow third-party modules to alter the path where the library is found.
+  drupal_alter('textile_library_path', $path);
+
+  return $path;
+}
+
+/**
  * Textile filter. Provides filtering of Textile tags into XHTML.
  */
 function _textile_process($text, $format) {
@@ -77,14 +104,17 @@ function _textile_process($text, $format) {
  * Helper function for preg_replace_callback().
  */
 function _textile_match_process($matches) {
-  static $textile = NULL;
+  $textile = &Vars::staticValue(__FUNCTION__, NULL);
 
   if (empty($textile)) {
-    module_load_include('php', 'textile', 'classTextile');
+    $path = textile_library_path();
+    if ($path) {
+      require_once DRUPAL_ROOT . '/' . $path . 'classTextile.php';
 
-    $textile = new Textile();
-    //$textile->hu is the string that preceeds all relative URLs.
-    $textile->hu = url(NULL);
+      $textile = new Textile();
+      // $textile->hu is the string that preceeds all relative URLs.
+      $textile->hu = url(NULL);
+    }
   }
 
   return $textile->TextileThis($matches[1]);
