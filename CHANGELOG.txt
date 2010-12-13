@@ -1,6 +1,10 @@
 # $Id$
 # All the dates reported here are referred to UTC.
 
+2010-12-14
+----------
+#995356 by pillarsdotnet: Missing "/" in path to classTextile.php.
+
 2010-10-11
 ----------
 #934870 by mollo_ffmc: Call to undefined function _textile_process_match().
