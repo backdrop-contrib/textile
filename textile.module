@@ -109,7 +109,7 @@ function _textile_match_process($matches) {
   if (empty($textile)) {
     $path = textile_library_path();
     if ($path) {
-      require_once DRUPAL_ROOT . '/' . $path . 'classTextile.php';
+      require_once DRUPAL_ROOT . '/' . $path . '/classTextile.php';
 
       $textile = new Textile();
       // $textile->hu is the string that preceeds all relative URLs.
