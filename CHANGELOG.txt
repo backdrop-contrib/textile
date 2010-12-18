@@ -1,6 +1,10 @@
 # $Id$
 # All the dates reported here are referred to UTC.
 
+2010-12-18
+----------
+#1001674 by pillarsdotnet: Move from "Filters" to "Input filters" in module listing for consistency.
+
 2010-12-14
 ----------
 #995356 by pillarsdotnet: Missing "/" in path to classTextile.php.
