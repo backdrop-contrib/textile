@@ -104,17 +104,15 @@ function _textile_process($text, $format) {
  * Helper function for preg_replace_callback().
  */
 function _textile_match_process($matches) {
-  $textile = &Vars::staticValue(__FUNCTION__, NULL);
+  static $textile = NULL;
+  $path = textile_library_path();
 
-  if (empty($textile)) {
-    $path = textile_library_path();
-    if ($path) {
-      require_once DRUPAL_ROOT . '/' . $path . '/classTextile.php';
+  if (empty($textile) && $path) {
+    require_once './' . $path . '/classTextile.php';
 
-      $textile = new Textile();
-      // $textile->hu is the string that preceeds all relative URLs.
-      $textile->hu = url(NULL);
-    }
+    $textile = new Textile();
+    // $textile->hu is the string that preceeds all relative URLs.
+    $textile->hu = url(NULL);
   }
 
   return $textile->TextileThis($matches[1]);

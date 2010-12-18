@@ -2,6 +2,7 @@
 
 2010-12-18
 ----------
+#1001352 by kiam: Fatal error: TextileThis() on a on-object in textile.module line 100.
 #1001674 by pillarsdotnet: Move from 'Filters' to 'Input filters' in module listing for consistency.
 
 2010-12-14
