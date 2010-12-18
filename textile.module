@@ -85,17 +85,13 @@ function _textile_filter_tips($filter, $format, $long = FALSE) {
  * Helper function for preg_replace_callback().
  */
 function _textile_match_process($matches) {
-  $textile = &Vars::staticValue(__FUNCTION__, NULL);
+  $path = textile_library_path();
+  if ($path) {
+    require_once DRUPAL_ROOT . '/' . $path . '/classTextile.php';
 
-  if (empty($textile)) {
-    $path = textile_library_path();
-    if ($path) {
-      require_once DRUPAL_ROOT . '/' . $path . '/classTextile.php';
-
-      $textile = new Textile();
-      // $textile->hu is the string that preceeds all relative URLs.
-      $textile->hu = url(NULL);
-    }
+    $textile = new Textile();
+    // $textile->hu is the string that preceeds all relative URLs.
+    $textile->hu = url(NULL);
   }
 
   return $textile->TextileThis($matches[1]);
