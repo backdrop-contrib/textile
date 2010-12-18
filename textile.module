@@ -85,8 +85,10 @@ function _textile_filter_tips($filter, $format, $long = FALSE) {
  * Helper function for preg_replace_callback().
  */
 function _textile_match_process($matches) {
+  static $textile = NULL;
   $path = textile_library_path();
-  if ($path) {
+
+  if (empty($textile) && $path) {
     require_once DRUPAL_ROOT . '/' . $path . '/classTextile.php';
 
     $textile = new Textile();
