@@ -10,8 +10,12 @@
   into the same directory as textile.module.
 
 * Log into your site, enable the Textile module on the
-  admin/build/modules page. Finally, you must add the Textile filter to
+  admin/build/modules/include page. Finally, you must add the Textile filter to
   the appropriate input formats and set any desired configuration options.
+  Version 6.x-3.0-alpha1 (not yet released) and forward look for the Textile
+  library also outside the directory where the module is copied, such as
+  /sites/all/libraries/textile, or profiles/$profile/libraries/textile
+  (where $profile is the currently used profile).
 
 NOTE: You need to be careful with the order of your input filters. I
 recommend setting up a special filter for textile: Disable the

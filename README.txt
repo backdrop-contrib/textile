@@ -1,4 +1,5 @@
 # $Id$
+#
 
 The Textile module allows you to enter content using Textile, a
 simple, plain text syntax that is filtered into valid XHTML. The
@@ -13,35 +14,5 @@ whether or not Textile processing should only occur on text surrounded
 by [textile] and (optional) [/textile] tags.  If an input format is
 designed or required to use Textile, this option can be disabled, and
 all input will be filtered.
-
-Files
-  - textile.module
-      the actual module (PHP source code)
-
-  - textile.info
-      the module information file used by Drupal
-
-  - classTextile.php (external dependency)
-      you will need to download the most up-to-date textile library from
-      TextPattern [1] and place its classTetxile.php file in to the same
-      directory as textile.module
-
-  - README.txt (this file)
-      general module information
-
-  - INSTALL.txt
-      installation/configuration instructions
-
-  - CREDITS.txt
-      information on those responsible for this module
-
-  - CHANGELOG.txt
-      change/release history for this module
-
-  - LICENSE.txt
-      the license (GNU General Public License) covering the usage,
-      modification, and distribution of this software and its
-      accompanying files except for SmartyPants-PHP.inc which is
-      covered under a custom redistribution license
 
 [1] - http://textpattern.com/download
