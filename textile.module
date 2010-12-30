@@ -48,7 +48,13 @@ function textile_library_path() {
   $path = &Vars::staticValue(__FUNCTION__, '');
   $vars = new Vars();
 
-  foreach ($vars->getLibraryPath('textile', drupal_get_path('module', 'textile') . '/include') as $dir) {
+  if ($path) {
+    return $dir;
+  }
+
+  $dirs = $vars->getLibraryPath('textile');
+  $dirs[] = drupal_get_path('module', 'textile') . '/include';
+  foreach ($dirs as $dir) {
     $bool = (
       is_dir($dir) && file_exists("$dir/classTextile.php") &&
       is_file("$dir/classTextile.php")
