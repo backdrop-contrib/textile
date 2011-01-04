@@ -14,5 +14,3 @@ whether or not Textile processing should only occur on text surrounded
 by [textile] and (optional) [/textile] tags.  If an input format is
 designed or required to use Textile, this option can be disabled, and
 all input will be filtered.
-
-[1] - http://textpattern.com/download

@@ -121,12 +121,13 @@ function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id)
  * Settings callback for the Textile filter.
  */
 function _textile_settings($form, &$form_state, $filter, $format, $defaults, $filters) {
+  $filter->settings += $defaults;
   $settings = array();
 
   $settings['textile_tags'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use tags'),
-    '#default_value' => isset($filter->settings['textile_tags']) ? $filter->settings['textile_tags'] : $defaults['textile_tags'],
+    '#default_value' => $filter->settings['textile_tags'],
     '#description' => t('If enabled, only text between [textile] and optional [/textile] tags will be processed; otherwise, all text will be processed as Textile markup.')
   );
 

@@ -1,6 +1,10 @@
 # $Id$
 # All the dates reported here are referred to UTC.
 
+2011-01-04
+----------
+#1004410 by jrguitar21, kiam: Update the installation instructions.
+
 2010-12-22
 ----------
 #1004862 by kiam: The include directory is missing from the archive.
