@@ -1,5 +1,9 @@
 # $Id$
 
+2011-01-07
+----------
+#1004410 by jrguitar21, kiam: Update the installation instructions.
+
 2010-12-18
 ----------
 #1001352 by kiam: Fatal error: TextileThis() on a on-object in textile.module line 100.
