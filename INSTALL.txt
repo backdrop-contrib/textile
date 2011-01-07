@@ -12,8 +12,8 @@ input formats and set any desired configuration options.
 
 NOTE: You need to be careful with the order of your input filters. It is
 recommended to set up a special filter for textile, disable the line-break
-converter, set up the HTML filter to run AFTER textile, and only allow the types of tags you
-want to permit.
+converter, set up the HTML filter to run AFTER textile, and only allow the types
+of tags you want to permit.
 
 
 External dependencies
@@ -21,15 +21,15 @@ External dependencies
 This module depends on the Variables API module [1]; install it before the
 Textile module.
 
-This module depends also on the Textile PHP class from the TextPattern
-project [2]. The classTextile.php is packaged in the source/textpattern/lib
-directory of that project. This file must be downloaded and placed inside the
-include directory present in the directory containing the module,
-or alternatively managed as an external library via the Variables API module (see the optional
-Libraries configuration below).
+This module depends also on the Textile PHP class from the
+TextPattern project [2]. The classTextile.php is packaged in the
+source/textpattern/lib directory of that project. This file must be downloaded
+and placed inside the include directory present in the directory containing the
+module, or alternatively managed as an external library via the Variables API
+module (see the optional "Libraries configuration" below).
 
-You may download the most recent TextPattern tarball from [2]
-and extract the classTextile.php file.
+You may download the most recent TextPattern tarball from [2] and extract the
+classTextile.php file.
 
 The file may also be obtained directly from the subversion (svn) repository
 using wget/curl, svn export or svn externals. The most recent stable version can
@@ -37,13 +37,14 @@ be found by browsing the Google code repository [3].
 
   * Navigate to the most recent version (4.3.0 at the time of writing).
   * Navigate to the source/textpattern/lib directory.
-  * Download the classTextile.php file (eg, right click, save as) and
-    place the file into the Textile module directory, or copy the URL of the
-    file, and use wget/curl, svn export or svn externals to obtain the file.
+  * Download the classTextile.ph*p file (eg, right click, save as) or copy the
+    URL of the file and use wget/curl, svn export, or svn externals to obtain
+    the file from via the command line.
 
-If you are maintaing your code base in svn you may use svn export, writing a
-copy to your local directory without the .svn hidden files to track changes
-use:
+If you are maintaing your code base in svn you may use svn export which writes a
+copy to your local directory without the .svn hidden files to track changes. Run
+the following commands from within the "include" directory inside the Textile
+module's installation directory:
 
 svn export http://textpattern.googlecode.com/svn/releases/4.3.0/source/textpattern/lib/classTextile.php
 
