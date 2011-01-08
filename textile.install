@@ -20,7 +20,7 @@ function textile_requirements($phase) {
       );
     }
     else {
-      require_once DRUPAL_ROOT . '/' . $path . 'classTextile.php';
+      require_once DRUPAL_ROOT . '/' . $path . '/classTextile.php';
       $textile = new Textile();
       $requirements['textile'] = array(
         'severity' => REQUIREMENT_OK,

@@ -1,6 +1,10 @@
 # $Id$
 # All the dates reported here are referred to UTC.
 
+2011-01-09
+----------
+#1019328 by pillarsdotnet, kiam: The functions textile_library_path() and textile_requirements() need to be fixed.
+
 2011-01-04
 ----------
 #1004410 by jrguitar21, kiam: Update the installation instructions.

@@ -49,15 +49,16 @@ function textile_library_path() {
   $vars = new Vars();
 
   if ($path) {
-    return $dir;
+    return $path;
   }
 
   $dirs = $vars->getLibraryPath('textile');
   $dirs[] = drupal_get_path('module', 'textile') . '/include';
   foreach ($dirs as $dir) {
     $bool = (
-      is_dir($dir) && file_exists("$dir/classTextile.php") &&
-      is_file("$dir/classTextile.php")
+      is_dir(DRUPAL_ROOT . '/' . $dir) &&
+      file_exists(DRUPAL_ROOT . '/' . "$dir/classTextile.php") &&
+      is_file(DRUPAL_ROOT . '/' . "$dir/classTextile.php")
     );
     if ($bool) {
       $path = $dir;
