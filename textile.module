@@ -57,8 +57,8 @@ function textile_library_path() {
   foreach ($dirs as $dir) {
     $bool = (
       is_dir(DRUPAL_ROOT . '/' . $dir) &&
-      file_exists(DRUPAL_ROOT . '/' . "$dir/classTextile.php") &&
-      is_file(DRUPAL_ROOT . '/' . "$dir/classTextile.php")
+      file_exists(DRUPAL_ROOT . "$dir/classTextile.php") &&
+      is_file(DRUPAL_ROOT . "/$dir/classTextile.php")
     );
     if ($bool) {
       $path = $dir;
@@ -103,7 +103,7 @@ function _textile_match_process($matches) {
     $textile->hu = url(NULL);
   }
 
-  return $textile->TextileThis($matches[1]);
+  return is_null($textile) ? $matches[1] : $textile->TextileThis($matches[1]);
 }
 
 /**

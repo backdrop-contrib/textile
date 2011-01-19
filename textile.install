@@ -8,11 +8,12 @@
 * already.
 */
 function textile_requirements($phase) {
-  $path = drupal_get_path('module', 'textile');
   $requirements = array();
 
   if ($phase == 'runtime') {
-    if (!($path = textile_library_path())) {
+    drupal_load('module', 'textile');
+    $path = textile_library_path();
+    if (!$path) {
       $requirements['textile'] = array(
         'value' => t('Not installed'),
         'severity' => REQUIREMENT_ERROR,
