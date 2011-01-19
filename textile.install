@@ -12,7 +12,7 @@ function textile_requirements($phase) {
   $requirements = array();
 
   if ($phase == 'runtime') {
-    if (!file_exists($path .'/classTextile.php')) {
+    if (!file_exists($path . '/include/classTextile.php')) {
       $requirements['textile'] = array(
         'value' => t('Not installed'),
         'severity' => REQUIREMENT_ERROR,
@@ -20,7 +20,7 @@ function textile_requirements($phase) {
       );
     }
     else {
-      module_load_include('php', 'textile', 'classTextile');
+      module_load_include('php', 'textile', 'include/classTextile');
       $textile = new Textile();
       $requirements['textile'] = array(
         'severity' => REQUIREMENT_OK,

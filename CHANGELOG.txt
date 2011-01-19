@@ -1,5 +1,10 @@
 # $Id$
 
+2011-01-19
+----------
+#1024710 by kiam: Change the code to avoid a WSOD if classTextile.php is not present.
+#1031446 by thatoneguy: Incorrect location for classTextile.php in textile.install.
+
 2011-01-07
 ----------
 #1004410 by jrguitar21, kiam: Update the installation instructions.
