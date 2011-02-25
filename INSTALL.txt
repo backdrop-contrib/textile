@@ -1,6 +1,5 @@
 textile.module
 INSTALL.txt
-$Id$
 
 Installation of textile.module could not be simpler. Simply copy the
 textile directory, containing the textile.module file and

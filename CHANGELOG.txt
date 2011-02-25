@@ -1,6 +1,5 @@
 textile.module
 CHANGELOG.txt
-$Id$
 
 2004-03-21
   - release 4.6r1/2005032101
