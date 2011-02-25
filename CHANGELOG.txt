@@ -1,6 +1,5 @@
 textile.module
 CHANGELOG.txt
-$Id$
 
 2007-06-27
   - Transferred owenership to joshk

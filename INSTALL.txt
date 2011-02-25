@@ -1,4 +1,3 @@
-$Id$
 
 For a new installation, copy the entire textile module directory to the
 appropriate module directory within your Drupal installation.
