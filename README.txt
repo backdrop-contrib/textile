@@ -1,4 +1,3 @@
-# $Id$
 
 The Textile module allows you to enter content using Textile, a
 simple, plain text syntax that is filtered into valid XHTML. The
