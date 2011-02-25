@@ -1,4 +1,3 @@
-# $Id$
 # All the dates reported here are referred to UTC.
 
 2011-01-08

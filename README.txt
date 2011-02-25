@@ -1,4 +1,3 @@
-# $Id$
 #
 
 The Textile module allows you to enter content using Textile, a
