@@ -1,4 +1,3 @@
-# $Id$
 #
 
 This is the directory where the Textile library is looked for.
