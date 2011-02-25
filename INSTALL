@@ -1,6 +1,5 @@
 textile.module
 INSTALL
-$Id$
 
 Installation of textile.module could not be simpler. Simply copy the
 textile directory, containing the textile.module and related PHP files

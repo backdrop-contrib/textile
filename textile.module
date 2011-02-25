@@ -1,12 +1,10 @@
 <?php
-// $Id$
 
 /**
  * The textile module allows input of Textile version 1 and 2b text
  * into the body and teaser of a node. The version used -- 1, 2, or
  * none -- can be set on a per-node basis.
  *
- * @version $Id$
  * @copyright Copyright (c) 2003 Jim Riggs.  All rights reserved.
  * @author Jim Riggs <drupal at jim and lissa dot com>
  */
