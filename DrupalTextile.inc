@@ -1,11 +1,9 @@
 <?php
-// $Id$
 
 /**
  * DrupalTextile is a subclass of MTLikeTextile that properly handles
  * Textile footnote URL fragments in a Drupal context.
  *
- * @version $Id$
  * @copyright Copyright (c) 2003-2006 Jim Riggs.  All rights reserved.
  * @author Jim Riggs <drupal at jimandlissa dot com>
  */

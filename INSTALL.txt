@@ -1,6 +1,5 @@
 textile.module
 INSTALL.txt
-$Id$
 
 Installation of textile.module could not be simpler. Simply copy the
 entire textile directory to your Drupal modules directory. Then log
