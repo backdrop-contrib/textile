@@ -1,6 +1,5 @@
 textile.module
 CREDITS.txt
-$Id$
 
 Written by
   - Jim Riggs <drupal at jimandlissa dot com>

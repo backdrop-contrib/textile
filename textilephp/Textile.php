@@ -1,5 +1,4 @@
 <?php
-// @(#) $Id$
 
 /* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -4075,6 +4074,5 @@ class MTLikeTextile extends Textile {
  * @author Jim Riggs \<textile at jimandlissa dot com\>
  * @author Brad Choate \<brad at bradchoate dot com\>
  * @copyright Copyright &copy; 2004 Jim Riggs and Brad Choate
- * @version @(#) $Id$
  */
 ?>

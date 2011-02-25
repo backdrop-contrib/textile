@@ -1,6 +1,5 @@
 textile.module
 CHANGELOG.txt
-$Id$
 
 2004-03-21
   - release 4.5r3/2005032100 (versioning changed to better coincide

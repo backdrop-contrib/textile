@@ -1,10 +1,8 @@
 <?php
-// $Id$
 
 /**
  * The textile module allows input of Textile shorthand.
  *
- * @version $Id$
  * @copyright Copyright (c) 2003-2004 Jim Riggs.  All rights reserved.
  * @author Jim Riggs <drupal at jimandlissa dot com>
  */
