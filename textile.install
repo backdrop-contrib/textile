@@ -12,11 +12,11 @@ function textile_requirements($phase) {
   if ($phase == 'runtime') {
     drupal_load('module', 'textile');
     $path = textile_library_path();
-    if (!empty($path)) {
+    if (empty($path)) {
       $requirements['textile'] = array(
         'value' => t('Not installed'),
         'severity' => REQUIREMENT_ERROR,
-        'description' => t('The Textile library is missing. Drupal cannot use Textile markup without this library. Please check the <a href="@url">textile module INSTALL documentation</a> for information on how to download this.', array('@url' => url($path . '/INSTALL.txt'))),
+        'description' => t('The Textile library is missing. Drupal cannot use Textile markup without this library. Please check the <a href="@url">textile module INSTALL documentation</a> for information on how to download this.', array('@url' => url(drupal_get_path('module', 'textile') . '/INSTALL.txt'))),
       );
     }
     else {

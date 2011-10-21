@@ -95,7 +95,8 @@ function _textile_match_process($matches) {
 
     $textile = new Textile();
     // $textile->hu is the string that preceeds all relative URLs.
-    $textile->hu = url(NULL);
+    $url = url(NULL);
+    $textile->hu = (substr($url, -1) == '/' ? $url : "$url/");
   }
 
   return is_null($textile) ? $matches[1] : $textile->TextileThis($matches[1]);
