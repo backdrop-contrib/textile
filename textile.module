@@ -38,7 +38,14 @@ function textile_help($path, $arg) {
 }
 
 /**
- * Retrivies where the Textile library has been copied.
+ * Implements hook_vars_library_LIBRARY_search_directories_alter().
+ */
+function textile_vars_library_textile_search_directories_alter(&$dirs, $context) {
+  $dirs[] = drupal_get_path('module', 'textile') . '/include';
+}
+
+/**
+ * Retrieves where the Textile library has been copied.
  *
  * @return
  *   The path of the Textile library.
@@ -51,24 +58,13 @@ function textile_library_path() {
     return $path;
   }
 
-  $dirs = $vars->getLibraryPath('textile');
-  $dirs[] = drupal_get_path('module', 'textile') . '/include';
-  foreach ($dirs as $dir) {
-    $bool = (
-      is_dir(DRUPAL_ROOT . '/' . $dir) &&
-      file_exists(DRUPAL_ROOT . "$dir/classTextile.php") &&
-      is_file(DRUPAL_ROOT . "/$dir/classTextile.php")
-    );
-    if ($bool) {
-      $path = $dir;
-      break;
-    }
+  $dirs = $vars->getLibraryPath('textile', array('files' => 'classTextile.php'));
+
+  if (empty($dirs)) {
+    return '';
   }
 
-  // Allow third-party modules to alter the path where the library is found.
-  drupal_alter('textile_library_path', $path);
-
-  return $path;
+  return $dirs[0];
 }
 
 /**
@@ -94,7 +90,7 @@ function _textile_match_process($matches) {
   static $textile = NULL;
   $path = textile_library_path();
 
-  if (empty($textile) && $path) {
+  if (is_null($textile) && $path) {
     require_once DRUPAL_ROOT . '/' . $path . '/classTextile.php';
 
     $textile = new Textile();
