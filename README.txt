@@ -1,5 +1,3 @@
-#
-
 The Textile module allows you to enter content using Textile, a
 simple, plain text syntax that is filtered into valid XHTML. The
 filter tips found on the filter/tips page of your Drupal site provides
@@ -13,5 +11,3 @@ whether or not Textile processing should only occur on text surrounded
 by [textile] and (optional) [/textile] tags.  If an input format is
 designed or required to use Textile, this option can be disabled, and
 all input will be filtered.
-
-[1] - http://textpattern.com/download
