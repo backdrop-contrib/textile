@@ -82,9 +82,12 @@ function _textile_match_process($matches) {
   if (empty($textile) && file_exists($path) && is_file($path)) {
     module_load_include('php', 'textile', 'include/classTextile');
 
-    $textile = new Textile();
-    // $textile->hu is the string that preceeds all relative URLs.
-    $textile->hu = url(NULL);
+    if (class_exists('Textile')) {
+      $textile = new Textile();
+      // $textile->hu is the string that preceeds all relative URLs.
+      $url = url(NULL);
+      $textile->hu = (substr($url, -1) == '/' ? $url : "$url/");
+    }
   }
 
   return is_null($textile) ? $matches[1] : $textile->TextileThis($matches[1]);
