@@ -52,14 +52,14 @@ function textile_library_path() {
 
   $config = conf_path();
   $directories = array(
-    'profiles/' . drupal_get_profile() . "/libraries/$library",
-    "sites/all/libraries/$library",
+    'profiles/' . drupal_get_profile() . "/libraries/textile",
+    "sites/all/libraries/textile",
     "$config/libraries",
     drupal_get_path('module', 'textile') . '/include'
   );
 
   foreach ($directories as $directory) {
-    if (file_exists($directory) && is_dir($directory) && file_exists($directory . "/classTextile.php") && is_file($directory . "/classTextile.php")) {
+    if (file_exists($directory) && is_dir($directory) && file_exists("$directory/classTextile.php") && is_file("$directory/classTextile.php")) {
       $path[] = $directory;
     }
   }
