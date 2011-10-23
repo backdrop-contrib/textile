@@ -38,33 +38,37 @@ function textile_help($path, $arg) {
 }
 
 /**
- * Implements hook_vars_library_LIBRARY_search_directories_alter().
- */
-function textile_vars_library_textile_search_directories_alter(&$dirs, $context) {
-  $dirs[] = drupal_get_path('module', 'textile') . '/include';
-}
-
-/**
  * Retrieves where the Textile library has been copied.
  *
  * @return
  *   The path of the Textile library.
  */
 function textile_library_path() {
-  $path = &Vars::staticValue(__FUNCTION__, '');
-  $vars = new Vars();
+  $path = &drupal_static(__FUNCTION__, '');
 
   if ($path) {
     return $path;
   }
 
-  $dirs = $vars->getLibraryPath('textile', array('files' => 'classTextile.php'));
+  $config = conf_path();
+  $directories = array(
+    'profiles/' . drupal_get_profile() . "/libraries/$library",
+    "sites/all/libraries/$library",
+    "$config/libraries",
+    drupal_get_path('module', 'textile') . '/include'
+  );
 
-  if (empty($dirs)) {
+  foreach ($directories as $directory) {
+    if (file_exists($directory) && is_dir($directory) && file_exists($directory . "/classTextile.php") && is_file($directory . "/classTextile.php")) {
+      $path[] = $directory;
+    }
+  }
+
+  if (empty($path)) {
     return '';
   }
 
-  return $dirs[0];
+  return $path[0];
 }
 
 /**
@@ -93,10 +97,12 @@ function _textile_match_process($matches) {
   if (is_null($textile) && $path) {
     require_once DRUPAL_ROOT . '/' . $path . '/classTextile.php';
 
-    $textile = new Textile();
-    // $textile->hu is the string that preceeds all relative URLs.
-    $url = url(NULL);
-    $textile->hu = (substr($url, -1) == '/' ? $url : "$url/");
+    if (class_exists('Textile')) {
+      $textile = new Textile();
+      // $textile->hu is the string that preceeds all relative URLs.
+      $url = url(NULL);
+      $textile->hu = (substr($url, -1) == '/' ? $url : "$url/");
+    }
   }
 
   return is_null($textile) ? $matches[1] : $textile->TextileThis($matches[1]);

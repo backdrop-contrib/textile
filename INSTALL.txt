@@ -1,4 +1,3 @@
-
 Installation
 ------------
 Install the Textile module as you would with any Drupal module.
