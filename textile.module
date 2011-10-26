@@ -36,7 +36,7 @@ function textile_filter_tips($delta, $format, $long = FALSE) {
     return _textile_filter_long_tips();
   }
   elseif (variable_get("textile_tags_$format", 0)) {
-    return t('You can use Textile markup to format text between the [textile] and (optional) [/textile] tags.');
+    return t('You can use Textile markup to format text between the <code>[textile]</code> and (optional) <code>[/textile]</code> tags.');
   }
   else {
     return t('You can use Textile markup to format text.');
@@ -59,6 +59,45 @@ function textile_help($path, $arg) {
 }
 
 /**
+ * Retrieves where the Textile library has been copied.
+ *
+ * @return
+ *   The path of the Textile library.
+ */
+function textile_library_path() {
+  global $profile;
+  static $path = '';
+
+  if ($path) {
+    return $path;
+  }
+
+  if (!isset($profile)) {
+    $profile = variable_get('install_profile', 'default');
+  }
+
+  $config = conf_path();
+  $directories = array(
+    "./profiles/$profile/libraries/textile",
+    "./sites/all/libraries/textile",
+    "./$config/libraries",
+    './' . drupal_get_path('module', 'textile') . '/include'
+  );
+
+  foreach ($directories as $directory) {
+    if (file_exists($directory) && is_dir($directory) && file_exists("$directory/classTextile.php") && is_file("$directory/classTextile.php")) {
+      $path[] = $directory;
+    }
+  }
+
+  if (empty($path)) {
+    return '';
+  }
+
+  return $path[0];
+}
+
+/**
  * Textile filter. Provides filtering of Textile tags into XHTML.
  */
 function _textile_process($text, $format) {
@@ -77,10 +116,10 @@ function _textile_process($text, $format) {
  */
 function _textile_match_process($matches) {
   static $textile = NULL;
-  $path = drupal_get_path('module', 'textile') . '/include/classTextile.php';
+  $path = textile_library_path();
 
-  if (empty($textile) && file_exists($path) && is_file($path)) {
-    module_load_include('php', 'textile', 'include/classTextile');
+  if (empty($textile) && !empty($path)) {
+    require_once "$path/classTextile";
 
     if (class_exists('Textile')) {
       $textile = new Textile();
@@ -109,7 +148,7 @@ function _textile_settings($format) {
     '#type' => 'checkbox',
     '#title' => t('Use tags'),
     '#default_value' => variable_get("textile_tags_$format", 0),
-    '#description' => t('If enabled, only text between [textile] and optional [/textile] tags will be processed; otherwise, all text will be processed as Textile markup.')
+    '#description' => t('If enabled, only text between <code>[textile]</code> and optional <code>[/textile]</code> tags will be processed; otherwise, all text will be processed as Textile markup.')
   );
 
   return $form;

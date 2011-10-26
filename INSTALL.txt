@@ -16,15 +16,12 @@ of tags you want to permit.
 
 External dependencies
 ---------------------
-This module depends on the Variables API module [1]; install it before the
-Textile module.
-
-This module depends also on the Textile PHP class from the
+This module depends on the Textile PHP class from the
 TextPattern project [2]. The classTextile.php is packaged in the
 source/textpattern/lib directory of that project. This file must be downloaded
 and placed inside the include directory present in the directory containing the
-module, or alternatively managed as an external library via the Variables API
-module (see the optional "Libraries configuration" below).
+module, or alternatively managed as an external library (see the optional
+"Libraries configuration" below).
 
 You may download the most recent TextPattern tarball from [2] and extract the
 classTextile.php file.
@@ -35,9 +32,9 @@ be found by browsing the Google code repository [3].
 
   * Navigate to the most recent version (4.3.0 at the time of writing).
   * Navigate to the source/textpattern/lib directory.
-  * Download the classTextile.ph*p file (eg, right click, save as) or copy the
+  * Download the classTextile.php file (e.g., right click, and select "save as") or copy the
     URL of the file and use wget/curl, svn export, or svn externals to obtain
-    the file from via the command line.
+    the file via the command line.
 
 If you are maintaing your code base in svn you may use svn export which writes a
 copy to your local directory without the .svn hidden files to track changes. Run
@@ -67,9 +64,7 @@ remote server.
 Libraries configuration (optional)
 ----------------------------------
 From version 7.x-2.0-rc8 and onward, this module supports placing the Textile
-class in a separate shared location within your Drupal installation, and uses
-the Variables API module for dynamically finding the external code libraries
-(such as Textile).
+class in a separate shared location within your Drupal installation.
 
 To create a library for Textile, create a directory called 'textile' in one of
 the recommended locations for shared libraries. The locations where the
@@ -80,6 +75,7 @@ the recommended locations for shared libraries. The locations where the
   * profiles/$profile/libraries/textile
 
 $domain is the domain name, and $profile is the currently used profile name.
+
 
 [1]  http://drupal.org/project/vars
 [2]  http://textpattern.com/download
