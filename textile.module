@@ -52,10 +52,10 @@ function textile_library_path() {
 
   $config = conf_path();
   $directories = array(
-    'profiles/' . drupal_get_profile() . "/libraries/textile",
-    "sites/all/libraries/textile",
-    "$config/libraries",
-    drupal_get_path('module', 'textile') . '/include'
+    DRUPAL_ROOT . '/profiles/' . drupal_get_profile() . "/libraries/textile",
+    DRUPAL_ROOT . '/sites/all/libraries/textile',
+    DRUPAL_ROOT . "/$config/libraries",
+    DRUPAL_ROOT . '/' . drupal_get_path('module', 'textile') . '/include'
   );
 
   foreach ($directories as $directory) {
@@ -80,7 +80,7 @@ function _textile_filter_tips($filter, $format, $long = FALSE) {
     return _textile_filter_long_tips();
   }
   elseif (isset($filter->settings['textile_tags']) && $filter->settings['textile_tags']) {
-    return t('You can use Textile markup to format text between the [textile] and (optional) [/textile] tags.');
+    return t('You can use Textile markup to format text between the <code>[textile]</code> and (optional) <code>[/textile]</code> tags.');
   }
   else {
     return t('You can use Textile markup to format text.');
@@ -95,7 +95,7 @@ function _textile_match_process($matches) {
   $path = textile_library_path();
 
   if (is_null($textile) && $path) {
-    require_once DRUPAL_ROOT . '/' . $path . '/classTextile.php';
+    require_once $path . '/classTextile.php';
 
     if (class_exists('Textile')) {
       $textile = new Textile();
