@@ -77,6 +77,5 @@ the recommended locations for shared libraries. The locations where the
 $domain is the domain name, and $profile is the currently used profile name.
 
 
-[1]  http://drupal.org/project/vars
 [2]  http://textpattern.com/download
 [3]  http://textpattern.googlecode.com/svn/releases
