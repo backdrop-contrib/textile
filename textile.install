@@ -34,5 +34,22 @@ function textile_requirements($phase) {
     );
   }
 
+  else {
+
+    $version = t('None');
+    if (file_exists($path .'/classTextile.php')) {
+      module_load_include('php', 'textile', 'classTextile');
+      $textile = new Textile();
+      $version = $textile->ver;
+    }
+    $requirements['textile'] = array(
+      'severity' => REQUIREMENT_OK,
+      'value' => $version,
+
+    );
+  }
+
+  $requirements['textile']['title'] = t('classTextile library');
+
   return $requirements;
 }

@@ -1,3 +1,4 @@
+
 Installation
 ------------
 Install the Textile module as you would with any Drupal module.
@@ -79,3 +80,4 @@ $domain is the domain name, and $profile is the currently used profile name.
 
 [2]  http://textpattern.com/download
 [3]  http://textpattern.googlecode.com/svn/releases
+
