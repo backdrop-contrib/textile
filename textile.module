@@ -25,7 +25,9 @@ function textile_filter_info() {
 /**
  * Implements hook_help().
  */
+
 function textile_help($path = 'admin/help#textile', $arg) {
+
   switch ($path) {
     case 'admin/help#textile':
       return '<p>' . t('

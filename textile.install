@@ -19,6 +19,7 @@ function textile_requirements($phase) {
     );
   }
   else {
+
     $version = t('None');
     if (file_exists($path .'/classTextile.php')) {
       module_load_include('php', 'textile', 'classTextile');
@@ -28,6 +29,7 @@ function textile_requirements($phase) {
     $requirements['textile'] = array(
       'severity' => REQUIREMENT_OK,
       'value' => $version,
+
     );
   }
 
