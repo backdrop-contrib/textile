@@ -3,21 +3,37 @@
 /**
 * Implements hook_requirements().
 *
-* Alert admins that they need to download the classTextile.php if they haven't
-* already.
+* Alert administrator users that they need to download the classTextile.php file if they
+* haven't done that already.
 */
-
 function textile_requirements($phase) {
-  $path = drupal_get_path('module', 'textile');
   $requirements = array();
+  $t = get_t();
 
-  if ($phase == 'runtime' && !file_exists($path .'/classTextile.php')) {
+  if ($phase == 'runtime') {
+    $path = textile_library_path();
+    if (!empty($path)) {
+      require_once DRUPAL_ROOT . '/' . "$path/classTextile.php";
+      if (class_exists('Textile')) {
+        $textile = new Textile();
+        $requirements['textile'] = array(
+          'title' => $t('Textile library'),
+          'severity' => REQUIREMENT_OK,
+          'value' => $textile->ver,
+        );
+        
+        return $requirements;
+      }
+    }
+        
     $requirements['textile'] = array(
-      'value' => t('Not installed'),
+      'title' => $t('Textile library'),
+      'value' => $t('Not installed'),
       'severity' => REQUIREMENT_ERROR,
-      'description' => t('The classTextile.php library is missing. Drupal cannot use textile markup without this library. Please check the <a href="@url">textile module INSTALL documentation</a> for information on how to download this.', array('@url' => url($path . '/INSTALL.txt'))),
+      'description' => $t('The Textile class is missing. Drupal cannot use Textile markup without this class. Please check the <a href="@url">textile module INSTALL documentation</a> for information on how to download it.', array('@url' => url(drupal_get_path('module', 'textile') . '/INSTALL.txt'))),
     );
   }
+
   else {
 
     $version = t('None');

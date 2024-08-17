@@ -6,31 +6,31 @@
  * File for the long description of the filter format.
  */
 function _textile_filter_long_tips() {
-    return t('<h1>Textile Help</h1>
+    return t('Textile Help
 
 <h2>Block modifier syntax:</h2>
 
 <p>
   CSS attributes can be applied to blocks (paragraphs, headers,
-  etc.). CSS classes are specifed with "<code>(<i>class</i>)</code>";
-  CSS IDs are specified with "<code>(#<i>id</i>)</code>"; both can be
-  specified with "<code>(<i>class</i>#<i>id</i>)</code>". An arbtirary
+  etc.). CSS classes are specifed with <q><code>(<em>class</em>)</code></q>;
+  CSS IDs are specified with <q><code>(#<em>id</em>)</code></q>; both can be
+  specified with <q><code>(<em>class</em>#<em>id</em>)</code></q>. An arbtirary
   CSS style can be applied by using
-  "<code>{<i>style</i>}</code>". Finally, language attributes are
-  applied using "<code>[<i>language</i>]</code>".
+  <q><code>{<em>style</em>}</code></q>. Finally, language attributes are
+  applied using <q><code>[<em>language</em>]</code></q>.
 </p>
 <p>
   Additionally, alignment and indentation shorthands are provided. To
   left-align, right-align, center, and justify text, use
-  "<code>&lt;</code>", "<code>&gt;</code>", "<code>=</code>", and
-  "<code>&lt;&gt;</code>", respectively. "<code>(</code>" left-indents
-  a block 1em for each occurrence, and "<code>)</code>" right-indents
+  <q><code>&lt;</code></q>, <q><code>&gt;</code></q>, <q><code>=</code></q>, and
+  <q><code>&lt;&gt;</code></q>, respectively. <q><code>(</code></q> left-indents
+  a block 1em for each occurrence, and <q><code>)</code></q> right-indents
   similarly.
 </p>
 <p>
-  Tables have additional options. "<code>^</code>", "<code>-</code>",
-  and "<code>~</code>" specify top, middle, and bottom vertical
-  alignment. The "<code>_</code>" attribute on a cell indicates that
+  Tables have additional options. <q><code>^</code></q>, <q><code>-</code></q>,
+  and <q><code>~</code></q> specify top, middle, and bottom vertical
+  alignment. The <q><code>_</code></q> attribute on a cell indicates that
   it is a table header.
 </p>
 <p>
@@ -46,10 +46,11 @@ function _textile_filter_long_tips() {
 <tr class="dark">
   <td colspan="2">
     <h3>Headings</h3>
-    <code>h<i>x</i>.</code> (where <i>x</i> is 1 - 6)
+    <code>h<em>x</em>.</code> (where <em>x</em> is 1 - 6)
   </td>
 </tr>
 <tr class="light">
+  <a name="10"></a>
   <td>h1. Heading</td>
   <td><h1>Heading</h1></td>
 </tr>
@@ -134,7 +135,7 @@ function _textile_filter_long_tips() {
 <tr class="dark">
   <td colspan="2">
     <h3>Footnotes</h3>
-    <code>fn<i>x</i>.</code> (where <i>x</i> is 1 - 100)
+    <code>fn<em>x</em>.</code> (where <em>x</em> is 1 - 100)
   </td>
 </tr>
 <tr class="light">
@@ -196,7 +197,7 @@ function _textile_filter_long_tips() {
 </tr>
 <tr class="light">
   <td>__italic__</td>
-  <td><i>italic</i></td>
+  <td><em>italic</em></td>
 </tr>
 <tr class="dark">
   <td>*strong*</td>
@@ -243,32 +244,32 @@ function _textile_filter_long_tips() {
   <td>no textile</td>
 </tr>
 <tr class="dark">
-  <td>"link text":url</td>
-  <td><a href="url">link text</a></td>
+  <td>"link text":@url</td>
+  <td><a href="@url">link text</a></td>
 </tr>
 <tr class="light">
-  <td>"link text(title)":url</td>
-  <td><a href="url" title="title">link text</a></td>
+  <td>"link text(title)":@url</td>
+  <td><a href="@url" title="title">link text</a></td>
 </tr>
 <tr class="dark">
-  <td>!imageurl!</td>
-  <td><img src="imageurl" /></td>
+  <td>&#33@image-url&#33</td>
+  <td><img src="@image-url" /></td>
 </tr>
 <tr class="light">
-  <td>!imageurl(alt text)!</td>
-  <td><img src="imageurl" alt="alt text" /></td>
+  <td>&#33@image-url(alt text)&#33</td>
+  <td><img src="@image-url" alt="alt text" /></td>
 </tr>
 <tr class="dark">
-  <td>!imageurl!:url</td>
-  <td><a href="imageurl"><img src="imageurl" /></a></td>
+  <td>&#33@image-url&#33:@url</td>
+  <td><a href="@url"><img src="@image-url" /></a></td>
 </tr>
 <tr class="light">
   <td>ABC(Always Be Closing)</td>
   <td><acronym title="Always Be Closing">ABC</acronym></td>
 </tr>
 <tr class="dark">
-  <td>Footnote reference[17]</td>
-  <td>Footnote reference<sup><a href="#17">17</a></sup></td>
+  <td>Footnote reference[10]</td>
+  <td>Footnote reference<sup><a href="#10">10</a></sup></td>
 </tr>
-</table>');
+</table>', array('@image-url' => url('misc/druplicon.png'), '@url' => 'http://drupal.org'));
 }
