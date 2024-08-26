@@ -12,9 +12,9 @@ function _textile_filter_long_tips() {
 
 <p>
   CSS attributes can be applied to blocks (paragraphs, headers,
-  etc.). CSS classes are specifed with <q><code>(<em>class</em>)</code></q>;
+  etc.). CSS classes are specified with <q><code>(<em>class</em>)</code></q>;
   CSS IDs are specified with <q><code>(#<em>id</em>)</code></q>; both can be
-  specified with <q><code>(<em>class</em>#<em>id</em>)</code></q>. An arbtirary
+  specified with <q><code>(<em>class</em>#<em>id</em>)</code></q>. An arbitrary
   CSS style can be applied by using
   <q><code>{<em>style</em>}</code></q>. Finally, language attributes are
   applied using <q><code>[<em>language</em>]</code></q>.
@@ -271,5 +271,5 @@ function _textile_filter_long_tips() {
   <td>Footnote reference[10]</td>
   <td>Footnote reference<sup><a href="#10">10</a></sup></td>
 </tr>
-</table>', array('@image-url' => url('misc/druplicon.png'), '@url' => 'http://drupal.org'));
+</table>', array('@image-url' => url('misc/druplicon.png'), '@url' => 'https://drupal.org'));
 }

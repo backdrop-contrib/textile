@@ -8,7 +8,8 @@
 /**
  * Implements hook_filter_info().
  */
-function textile_filter_info() {
+function textile_filter_info(): array
+{
   $filters['textile'] = array(
     'title' => t('Textile'),
     'description' => t('Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.'),
@@ -26,27 +27,27 @@ function textile_filter_info() {
 /**
  * Implements hook_help().
  */
-
-function textile_help($path = 'admin/help#textile', $arg) {
-
-  switch ($path) {
-    case 'admin/help#textile':
-      return '<p>' . t('
+function textile_help($path, $arg): ?string
+{
+    if ($path == 'admin/help#textile') {
+        return '<p>' . t('
         The Textile module allows users to enter content using Textile, a
         simple, plain text syntax that is filtered into valid XHTML. The <a
         href="filter/tips" title="Textile help">filter tips page</a>
         provides syntax descriptions and examples.') . '</p>';
-  }
+    }
+  return null;
 }
 
 /**
  * Retrieves where the Textile library has been copied.
  *
- * @return
+ * @return array|mixed|string The path of the Textile library.
  *   The path of the Textile library.
  */
-function textile_library_path() {
-  $path = &drupal_static(__FUNCTION__, '');
+function textile_library_path(): mixed
+{
+  $path = &backdrop_static(__FUNCTION__, '');
 
   if ($path) {
     return $path;
@@ -54,15 +55,15 @@ function textile_library_path() {
 
   $config = conf_path();
   $directories = array(
-    DRUPAL_ROOT . '/profiles/' . drupal_get_profile() . "/libraries/textile",
-    DRUPAL_ROOT . '/sites/all/libraries/textile',
-    DRUPAL_ROOT . "/$config/libraries",
-    DRUPAL_ROOT . '/' . drupal_get_path('module', 'textile') . '/include'
+    BACKDROP_ROOT . '/profiles/' . backdrop_get_profile() . "/libraries/textile",
+    BACKDROP_ROOT . '/sites/all/libraries/textile',
+    BACKDROP_ROOT . "/$config/libraries",
+    BACKDROP_ROOT . '/' . backdrop_get_path('module', 'textile') . '/include'
   );
 
   foreach ($directories as $directory) {
-    if (file_exists($directory) && is_dir($directory) && file_exists("$directory/classTextile.php") && is_file("$directory/classTextile.php")) {
-      $path[] = $directory;
+    if (file_exists($directory) && is_dir($directory) && file_exists("$directory/Parser.php") && is_file("$directory/Parser.php")) {
+      $path = $directory;
     }
   }
 
@@ -70,7 +71,7 @@ function textile_library_path() {
     return '';
   }
 
-  return $path[0];
+  return $path;
 }
 
 /**
@@ -97,17 +98,17 @@ function _textile_match_process($matches) {
   $path = textile_library_path();
 
   if (is_null($textile) && $path) {
-    require_once $path . '/classTextile.php';
+    require_once $path . '/Parser.php';
 
-    if (class_exists('Textile')) {
-      $textile = new Textile();
-      // $textile->hu is the string that preceeds all relative URLs.
-      $url = url(NULL);
-      $textile->hu = (substr($url, -1) == '/' ? $url : "$url/");
+    if (class_exists('Parser')) {
+      $textile = new Parser();
+      // $textile->hu is the string that precedes all relative URLs.
+      $url = url();
+      $textile->hu = (str_ends_with($url, '/') ? $url : "$url/");
     }
   }
 
-  return is_null($textile) ? $matches[1] : $textile->TextileThis($matches[1]);
+  return is_null($textile) ? $matches[1] : $textile->textileThis($matches[1]);
 }
 
 /**
@@ -125,7 +126,8 @@ function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id)
 /**
  * Settings callback for the Textile filter.
  */
-function _textile_settings($form, &$form_state, $filter, $format, $defaults, $filters) {
+function _textile_settings($form, &$form_state, $filter, $format, $defaults, $filters): array
+{
   $filter->settings += $defaults;
   $settings = array();
 
