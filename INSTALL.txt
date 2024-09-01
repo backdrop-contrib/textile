@@ -19,39 +19,48 @@ of tags you want to permit.
 External dependencies
 ---------------------
 This module depends on the Textile PHP class from the PHP-Textile project [1].
-The library Parser.php is packaged in the src/Netcarver/Textile directory of
-that project. A recent version is packaged with this module and can be found
-inside the include directory present in the directory containing the module, or
-alternatively managed as an external library (see the optional "Libraries
-configuration" below).
+The library Parser.php and related files are packaged in the
+src/Netcarver/Textile directory of that project. A recent version is packaged
+with this module and can be found inside the include directory present in the
+directory containing the module, or alternatively managed as an external library
+(see the optional "Libraries configuration" below). PHP-Textile now uses three
+class files, though only one of them is needed for this module. However, all
+three (Parser.php, DataBag.php, and Tag .php) should be installed to avoid
+missing class errors.
 
 To have the latest version of the library, you may download the most recent
-PHP-Textile zip or tarball from [1] and extract the Parser.php file.
+PHP-Textile zip or tarball from [1] and extract the Parser.php and
+related files.
 
 The file may also be obtained directly from the GitHub repository. The most
 recent stable version can be found by browsing the project repository [2].
 
   * Navigate to the master branch (latest version 4.1.1 at the time of writing).
   * Navigate to the src/Netcarver/Textile directory.
-  * Download the Parser.php file (e.g., right click, and select "save as") or
-    copy the URL of the file and use wget/curl to obtain the file via the
-    command line.
+  * Download the Parser.php, DataBag.php, and Tag.php files (e.g., right click,
+    and select "save as") or copy the URLs of the files and use wget/curl to
+    obtain them via the command line.
 
 
 Libraries configuration (optional)
 ----------------------------------
-From version 7.x-2.0-rc8 and onward, this module supports placing the Textile
-class in a separate shared location within your Drupal installation.
+This module for Backdrop bundles the required external libraries with the
+module files. However, should the libraries need to be shared across modules,
+to maintain compatability this module still searches several locations for the
+Parser class files. Instructions for the Drupal 7 module are shown below.
 
-To create a library for Textile, create a directory called 'textile' in one of
-the recommended locations for shared libraries. The locations where the
-'textile' directory is searched are:
+  From version 7.x-2.0-rc8 and onward, this module supports placing the Textile
+  class in a separate shared location within your Drupal installation.
 
-  * sites/all/libraries/textile
-  * sites/$domain/libraries/textile
-  * profiles/$profile/libraries/textile
+  To create a library for Textile, create a directory called 'textile' in one of
+  the recommended locations for shared libraries. The locations where the
+  'textile' directory is searched are:
 
-$domain is the domain name, and $profile is the currently used profile name.
+    * sites/all/libraries/textile
+    * sites/$domain/libraries/textile
+    * profiles/$profile/libraries/textile
+
+  $domain is the domain name, and $profile is the currently used profile name.
 
 
 [1]  https://github.com/textile/php-textile

@@ -16,21 +16,29 @@ designed or required to use Textile, this option can be disabled, and
 all input will be filtered.
 
 
-Requirements <!-- Do not include this section if there are no requirements. -->
+Requirements
 ------------
 
-This module requires that the Textile class library be installed in the include/ directory, as explained in the INSTALL.txt file. A recent version is included, but updated versions are available as described in INSTALL.txt.
+This module requires that the Textile class libraries be installed in the 
+include/ directory, as explained in the INSTALL.txt file. A recent version 
+is included, but updated versions are available as described in INSTALL.txt.
 
-Installation <!-- This section is required. -->
+Installation
 ------------
 
 - Install this module using the official Backdrop CMS instructions at
   https://docs.backdropcms.org/documentation/extend-with-modules.
 
-- Visit the configuration page under Administration > Configuration > Category >
-  Foo (admin/config/category/foo) and enter the required information.
+- Visit the configuration page under 'Administration > Configuration > Content 
+  authoring > Text editors and formats > Add text format' and create a new text 
+  format with the Textile filter enabled. You may want to disable any text
+  editors for this text format, and have the Textile filter be either the only
+  filter enabled or be first on the list.
 
-- Any additional steps.
+- To configure the filter, press the "Configure" button. To limit Textile 
+  filtering to the text between the tags \[textile] and \[/textile], check the
+  box in the configure dialog. Otherwise, Textile will filter all the text
+  in the submitted text field.
 
 
 Documentation <!-- Do not include if you have not created a wiki page. -->
@@ -63,6 +71,8 @@ plugin.
   - Written by Jim Riggs (drupal at jimandlissa dot com)
   - Textile.pm written by Brad Choate (brad at bradchoate dot com)
   - TextilePHP ported by Jim Riggs (textile @ jimandlissa dot com)
+
+- The Textile class library was originally written by Dean Allen. It was refactored into a class framework by Carlo Zottmann. The library has been maintained by Alex Shiels, Stef Dawson, Netcarver, Jeff Soo, Robert Wetzlmayr, and Jukka Svahn.
 
 
 License 
