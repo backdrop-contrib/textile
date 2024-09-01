@@ -72,7 +72,7 @@ plugin.
   - Textile.pm written by Brad Choate (brad at bradchoate dot com)
   - TextilePHP ported by Jim Riggs (textile @ jimandlissa dot com)
 
-- The Textile class library was originally written by Dean Allen. It was refactored into a class framework by Carlo Zottmann. The library has been maintained by Alex Shiels, Stef Dawson, Netcarver, Jeff Soo, Robert Wetzlmayr, and Jukka Svahn.
+- The Textile class library was originally written by Dean Allen. It was refactored into a class framework by Carlo Zottmann. The library has been maintained on GitHub by Alex Shiels, Stef Dawson, Netcarver, Jeff Soo, Robert Wetzlmayr, and Jukka Svahn.
 
 
 License 
