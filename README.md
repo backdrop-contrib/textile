@@ -41,7 +41,7 @@ Installation
   in the submitted text field.
 
 - After configuration, you can choose Textile as the format when creating
-  or editing content.
+  or editing content. 
 
 
 Documentation <!-- Do not include if you have not created a wiki page. -->
