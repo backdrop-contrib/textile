@@ -5,6 +5,8 @@
  * The textile module allows input of Textile shorthand.
  */
 
+use Netcarver\Textile\Parser;
+
 /**
  * Implements hook_filter_info().
  */
@@ -18,6 +20,7 @@ function textile_filter_info(): array
     'default settings' => array(
       'textile_tags' => FALSE,
     ),
+    'cache' => FALSE, // added to ease testing of the filter
     'tips callback' => '_textile_filter_tips',
   );
 
@@ -25,19 +28,19 @@ function textile_filter_info(): array
 }
 
 /**
- * Implements hook_help().
+ * Implements hook_help(). ** No longer used in Backdrop?
  */
-function textile_help($path, $arg): ?string
-{
-    if ($path == 'admin/help#textile') {
-        return '<p>' . t('
-        The Textile module allows users to enter content using Textile, a
-        simple, plain text syntax that is filtered into valid XHTML. The <a
-        href="filter/tips" title="Textile help">filter tips page</a>
-        provides syntax descriptions and examples.') . '</p>';
-    }
-  return null;
-}
+//function textile_help($path, $arg): ?string
+//{
+//    if ($path == 'admin/help#textile') {
+//        return '<p>' . t('
+//        The Textile module allows users to enter content using Textile, a
+//        simple, plain text syntax that is filtered into valid XHTML. The <a
+//        href="filter/tips" title="Textile help">filter tips page</a>
+//        provides syntax descriptions and examples.') . '</p>';
+//    }
+//  return null;
+//}
 
 /**
  * Retrieves where the Textile library has been copied.
@@ -68,11 +71,11 @@ function textile_library_path(): mixed
   }
 
   if (empty($path)) {
-    return '';
-  }
-
+    return '';}
   return $path;
 }
+
+
 
 /**
  * Filter tips callback for the Textile filter.
@@ -91,32 +94,45 @@ function _textile_filter_tips($filter, $format, $long = FALSE) {
 }
 
 /**
- * Helper function for preg_replace_callback().
+ * Textile filter. Provides filtering of Textile tags into XHTML.
+ * Helper function for textile_process().
  */
 function _textile_match_process($matches) {
+//  $path = NULL;
   static $textile = NULL;
   $path = textile_library_path();
+//  $path = BACKDROP_ROOT . '/' . 'modules/textile/include';
 
+  //Class Parser references other classes provided as separate files, although
+  // they are not used by this module.
   if (is_null($textile) && $path) {
+    require_once $path . '/DataBag.php';
     require_once $path . '/Parser.php';
+    require_once $path . '/Tag.php';
 
-    if (class_exists('Parser')) {
+    if (class_exists('\Netcarver\Textile\Parser')) {
       $textile = new Parser();
+
+      /** The purpose of the following code, from the Drupal 7 version, is not
+      clear and the module appears to work without it. The "dynamic
+      assignment" in the command is also deprecated in PHP 8.3. */
       // $textile->hu is the string that precedes all relative URLs.
-      $url = url();
-      $textile->hu = (str_ends_with($url, '/') ? $url : "$url/");
+      // $url = url();
+      // $textile->hu = (str_ends_with($url, '/') ? $url : "$url/");
     }
   }
-
-  return is_null($textile) ? $matches[1] : $textile->textileThis($matches[1]);
+  return is_null($textile) ? $matches[1] : $textile->parse($matches[1]);
 }
 
 /**
- * Textile filter. Provides filtering of Textile tags into XHTML.
+ * Either sends the entire text field content for parsing, or identifies
+ * sections marked with [textile] tags and sends the text inside the
+ * tags for processing.
  */
 function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   if ($filter->settings['textile_tags']) {
-    return preg_replace_callback('{\[textile\](.*?)(\[/textile\]|$)}is', '_textile_match_process', $text);
+    return preg_replace_callback('{\[textile\](.*?)(\[\/textile\]|$)}is', '_textile_match_process', $text);
+    // should the pattern be ' \[textile](.*?)(\[\/textile]|$) '?
   }
   else {
     return _textile_match_process(array(NULL, $text));
@@ -126,9 +142,8 @@ function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id)
 /**
  * Settings callback for the Textile filter.
  */
-function _textile_settings($form, &$form_state, $filter, $format, $defaults, $filters): array
+function _textile_settings($form, &$form_state, $filter, $format): array
 {
-  $filter->settings += $defaults;
   $settings = array();
 
   $settings['textile_tags'] = array(

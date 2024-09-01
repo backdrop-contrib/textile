@@ -1,9 +1,4 @@
 
 /xdebug-3.3.2/
 .DS_Store
-.idea/modules.xml
-.idea/php.xml
-.idea/textile-module.iml
-.idea/vcs.xml
-.idea/workspace.xml
-
+.idea/*

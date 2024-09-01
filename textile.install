@@ -11,12 +11,13 @@ function textile_requirements($phase): array
     $requirements = array();
     $t = get_t();
 
-    if ($phase == 'runtime') {
+    if ($phase == -1) {
         $path = textile_library_path();
         if (!empty($path)) {
-            require_once "$path/Parser.php";
+            include_once "$path/Parser.php";
         } else {
-            require_once BACKDROP_ROOT . '/' . "modules/textile/include/Parser.php";
+           include_once BACKDROP_ROOT . '/' . "modules/textile/include/Parser.php";
+//            include_once "/var/www/html/modules/textile/include/Parser.php";
         }
 
         if (class_exists('Parser')) {
@@ -32,10 +33,10 @@ function textile_requirements($phase): array
                 'title' => $t('Textile library'),
                 'value' => $t('Not installed'),
                 'severity' => REQUIREMENT_ERROR,
-                'description' => $t('The Textile class is missing. Drupal cannot use Textile markup without this class. Please check the <a href="@url">textile module INSTALL documentation</a> for information on how to download it.', array('@url' => url(backdrop_get_path('module', 'textile') . '/INSTALL.txt'))),
+                'description' => $t('The Textile class is missing. Backdrop cannot use Textile markup without this class. Please check the <a href="@url">textile module INSTALL documentation</a> for information on how to download it.', array('@url' => url(backdrop_get_path('module', 'textile') . '/INSTALL.txt'))),
             );
         }
     }
+
     return $requirements;
 }
-
