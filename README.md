@@ -33,7 +33,8 @@ Installation
   authoring > Text editors and formats > Add text format' and create a new text 
   format with the Textile filter enabled. You may want to disable any text
   editors for this text format, and have the Textile filter be either the only
-  filter enabled or be first on the list.
+  filter enabled or be first on the list. Different configurations of the
+  filter require separate text formats.
 
 - To configure the filter, press the "Configure" button. To limit Textile 
   filtering to the text between the tags \[textile] and \[/textile], check the

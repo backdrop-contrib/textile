@@ -11,6 +11,8 @@ function textile_requirements($phase): array
     $requirements = array();
     $t = get_t();
 
+    // This checks if Backdrop is in the "runtime" phase, though the numerical
+    // code is working while the text term itself was not.
     if ($phase == -1) {
         $path = textile_library_path();
         if (!empty($path)) {
