@@ -4,9 +4,9 @@ Textile markup filter
 
 The Textile module allows you to enter content using Textile, a simple, plain
 text syntax that is filtered into valid XHTML. The project Wiki page provides
-syntax descriptions and examples. ??If you are using the title module, you will
+syntax descriptions and examples. If you are using the title module, you will
 need to ensure that Textile comes before the title module on the filter ordering
-page.??
+page.
 
 Textile can be enabled on a per-input-format basis.  There is an
 option on the configuration page of each input format for indicating

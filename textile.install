@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file Requirements check for Textile library installation.
+ */
 
 /**
  * Implements hook_requirements().
@@ -6,39 +9,40 @@
  * Alert administrator users that they need to download the Parser.php file if they
  * haven't done that already.
  */
-function textile_requirements($phase): array
-{
-    $requirements = array();
-    $t = get_t();
+function textile_requirements($phase): array {
+  $requirements = array();
+  $t = get_t();
 
-    // This checks if Backdrop is in the "runtime" phase, though the numerical
-    // code is working while the text term itself was not.
-    if ($phase == -1) {
-        $path = textile_library_path();
-        if (!empty($path)) {
-            include_once "$path/Parser.php";
-        } else {
-           include_once BACKDROP_ROOT . '/' . "modules/textile/include/Parser.php";
-//            include_once "/var/www/html/modules/textile/include/Parser.php";
-        }
-
-        if (class_exists('Parser')) {
-            $textile = new Parser();
-            $requirements['textile'] = array(
-                'title' => $t('Textile library'),
-                'severity' => REQUIREMENT_OK,
-                'value' => $textile->ver,
-            );
-
-        } else {
-            $requirements['textile'] = array(
-                'title' => $t('Textile library'),
-                'value' => $t('Not installed'),
-                'severity' => REQUIREMENT_ERROR,
-                'description' => $t('The Textile class is missing. Backdrop cannot use Textile markup without this class. Please check the <a href="@url">textile module INSTALL documentation</a> for information on how to download it.', array('@url' => url(backdrop_get_path('module', 'textile') . '/INSTALL.txt'))),
-            );
-        }
+  // This checks if Backdrop is in the "runtime" phase, though the numerical
+  // code is working while the text term itself was not.
+  if ($phase == -1) {
+    $path = textile_library_path();
+    if (!empty($path)) {
+      include_once "$path/Parser.php";
+    }
+    else {
+      $path = backdrop_get_path('module', 'textile');
+      include_once $path . 'include/Parser.php';
     }
 
-    return $requirements;
+    if (class_exists('Parser')) {
+      $textile = new Parser();
+      $requirements['textile'] = array(
+        'title' => $t('Textile library'),
+        'severity' => REQUIREMENT_OK,
+        'value' => $textile->ver,
+      );
+
+    }
+    else {
+      $requirements['textile'] = array(
+        'title' => $t('Textile library'),
+        'value' => $t('Not installed'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => $t('The Textile class is missing. Backdrop cannot use Textile markup without this class.'),
+      );
+    }
+  }
+
+  return $requirements;
 }

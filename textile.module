@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * The textile module allows input of Textile shorthand.
@@ -10,8 +9,7 @@ use Netcarver\Textile\Parser;
 /**
  * Implements hook_filter_info().
  */
-function textile_filter_info(): array
-{
+function textile_filter_info(): array {
   $filters['textile'] = array(
     'title' => t('Textile'),
     'description' => t('Allows content to be submitted using Textile, a simple, plain text syntax that is filtered into valid XHTML.'),
@@ -28,54 +26,15 @@ function textile_filter_info(): array
 }
 
 /**
- * Implements hook_help(). ** No longer used in Backdrop?
- */
-//function textile_help($path, $arg): ?string
-//{
-//    if ($path == 'admin/help#textile') {
-//        return '<p>' . t('
-//        The Textile module allows users to enter content using Textile, a
-//        simple, plain text syntax that is filtered into valid XHTML. The <a
-//        href="filter/tips" title="Textile help">filter tips page</a>
-//        provides syntax descriptions and examples.') . '</p>';
-//    }
-//  return null;
-//}
-
-/**
  * Retrieves where the Textile library has been copied.
  *
  * @return array|mixed|string The path of the Textile library.
  *   The path of the Textile library.
  */
-function textile_library_path(): mixed
-{
-  $path = &backdrop_static(__FUNCTION__, '');
-
-  if ($path) {
-    return $path;
-  }
-
-  $config = conf_path();
-  $directories = array(
-    BACKDROP_ROOT . '/profiles/' . backdrop_get_profile() . "/libraries/textile",
-    BACKDROP_ROOT . '/sites/all/libraries/textile',
-    BACKDROP_ROOT . "/$config/libraries",
-    BACKDROP_ROOT . '/' . backdrop_get_path('module', 'textile') . '/include'
-  );
-
-  foreach ($directories as $directory) {
-    if (file_exists($directory) && is_dir($directory) && file_exists("$directory/Parser.php") && is_file("$directory/Parser.php")) {
-      $path = $directory;
-    }
-  }
-
-  if (empty($path)) {
-    return '';}
-  return $path;
+function textile_library_path(): mixed {
+  // To do: confirm this works
+  return backdrop_get_path('module', 'textile') . '/include';
 }
-
-
 
 /**
  * Filter tips callback for the Textile filter.
@@ -98,12 +57,10 @@ function _textile_filter_tips($filter, $format, $long = FALSE) {
  * Helper function for textile_process().
  */
 function _textile_match_process($matches) {
-//  $path = NULL;
   static $textile = NULL;
   $path = textile_library_path();
-//  $path = BACKDROP_ROOT . '/' . 'modules/textile/include';
 
-  //Class Parser references other classes provided as separate files, although
+  // Class Parser references other classes provided as separate files, although
   // they are not used by this module.
   if (is_null($textile) && $path) {
     require_once $path . '/DataBag.php';
@@ -112,13 +69,6 @@ function _textile_match_process($matches) {
 
     if (class_exists('\Netcarver\Textile\Parser')) {
       $textile = new Parser();
-
-      /** The purpose of the following code, from the Drupal 7 version, is not
-      clear and the module appears to work without it. The "dynamic
-      assignment" in the command is also deprecated in PHP 8.3. */
-      // $textile->hu is the string that precedes all relative URLs.
-      // $url = url();
-      // $textile->hu = (str_ends_with($url, '/') ? $url : "$url/");
     }
   }
   return is_null($textile) ? $matches[1] : $textile->parse($matches[1]);
@@ -132,7 +82,6 @@ function _textile_match_process($matches) {
 function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   if ($filter->settings['textile_tags']) {
     return preg_replace_callback('{\[textile\](.*?)(\[\/textile\]|$)}is', '_textile_match_process', $text);
-    // should the pattern be ' \[textile](.*?)(\[\/textile]|$) '?
   }
   else {
     return _textile_match_process(array(NULL, $text));
@@ -142,13 +91,12 @@ function _textile_process($text, $filter, $format, $langcode, $cache, $cache_id)
 /**
  * Settings callback for the Textile filter.
  */
-function _textile_settings($form, &$form_state, $filter, $format): array
-{
+function _textile_settings($form, &$form_state, $filter, $format): array {
   $settings = array();
 
   $settings['textile_tags'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Use tags'),
+    '#title' => t('Use the tags [textile] and [/textile].'),
     '#default_value' => $filter->settings['textile_tags'],
     '#description' => t('If enabled, only text between [textile] and optional [/textile] tags will be processed; otherwise, all text will be processed as Textile markup.')
   );

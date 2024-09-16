@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  *
@@ -271,5 +270,5 @@ function _textile_filter_long_tips() {
   <td>Footnote reference[10]</td>
   <td>Footnote reference<sup><a href="#10">10</a></sup></td>
 </tr>
-</table>', array('@image-url' => url('misc/druplicon.png'), '@url' => 'https://drupal.org'));
+</table>', array('@image-url' => url('misc/favicon.png'), '@url' => 'https://backdropcms.org'));
 }
