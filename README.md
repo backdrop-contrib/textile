@@ -4,9 +4,9 @@ Textile markup filter
 
 The Textile module allows you to enter content using Textile, a simple, plain
 text syntax that is filtered into valid XHTML. The project Wiki page provides
-syntax descriptions and examples. If you are using the title module, you will
-need to ensure that Textile comes before the title module on the filter ordering
-page.
+syntax descriptions and examples. (Caution from the Drupal version: If you are
+using the title module, you will need to ensure that Textile comes before the
+title module on the filter ordering page.)
 
 Textile can be enabled on a per-input-format basis.  There is an
 option on the configuration page of each input format for indicating
@@ -45,15 +45,15 @@ Installation
   or editing content. 
 
 
-Documentation <!-- Do not include if you have not created a wiki page. -->
+Documentation
 -------------
 
-Additional documentation is located in [the Wiki](https://github.com/backdrop-contrib/foo-project/wiki/Documentation).
+Additional documentation is located in [the Wiki](https://github.com/sjnorton-aa/textile/wiki).
 
 Issues 
 ------
 
-Bugs and feature requests should be reported in [the Issue Queue](https://github.com/backdrop-contrib/foo-project/issues).
+Bugs and feature requests should be reported in [the Issue Queue](https://github.com/sjnorton-aa/textile/issues).
 
 Current Maintainers 
 -------------------
@@ -76,7 +76,7 @@ plugin.
   - Textile.pm written by Brad Choate (brad at bradchoate dot com)
   - TextilePHP ported by Jim Riggs (textile @ jimandlissa dot com)
 
-- The Textile class library was originally written by Dean Allen. It was refactored into a class framework by Carlo Zottmann. The library has been maintained on GitHub by Alex Shiels, Stef Dawson, Netcarver, Jeff Soo, Robert Wetzlmayr, and Jukka Svahn.
+- The Textile class library was originally written by Dean Allen. It was refactored into a class framework by Carlo Zottmann. The library has been [maintained on GitHub](https://github.com/textile/php-textile) by Alex Shiels, Stef Dawson, Netcarver, Jeff Soo, Robert Wetzlmayr, and Jukka Svahn.
 
 
 License 
