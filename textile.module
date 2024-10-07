@@ -28,10 +28,10 @@ function textile_filter_info(): array {
 /**
  * Retrieves where the Textile library has been copied.
  *
- * @return array|mixed|string The path of the Textile library.
+ * @return string The path of the Textile library.
  *   The path of the Textile library.
  */
-function textile_library_path(): mixed {
+function textile_library_path(): string {
   // To do: confirm this works
   return backdrop_get_path('module', 'textile') . '/include';
 }
